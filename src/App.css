@@ -1,5 +1,6 @@
 .App {
   display: flex;
+  flex-flow: column wrap;
   text-align: center;
   background-color: #000;
   justify-content: center;
