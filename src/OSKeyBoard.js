@@ -1,4 +1,5 @@
 import React from "react"
+import OSKey from "./OSKey"
 import "./OSKeyBoard.css"
 
 /*
@@ -10,7 +11,41 @@ import "./OSKeyBoard.css"
 function OSKeyBoard(props){
     return(
         <div className="oskb">
-            <p>THIS IS A KEYBOARD!</p>
+            <div className="first-row">
+                <OSKey name="Q" type="letter" />
+                <OSKey name="W" type="letter" />
+                <OSKey name="E" type="letter" />
+                <OSKey name="R" type="letter" />
+                <OSKey name="T" type="letter" />
+                <OSKey name="Y" type="letter" />
+                <OSKey name="U" type="letter" />
+                <OSKey name="I" type="letter" />
+                <OSKey name="O" type="letter" />
+                <OSKey name="P" type="letter" />
+            </div>
+            <div className="second-row">
+                <OSKey name="A" type="letter" />
+                <OSKey name="S" type="letter" />
+                <OSKey name="D" type="letter" />
+                <OSKey name="F" type="letter" />
+                <OSKey name="G" type="letter" />
+                <OSKey name="H" type="letter" />
+                <OSKey name="J" type="letter" />
+                <OSKey name="K" type="letter" />
+                <OSKey name="L" type="letter" />
+            </div>
+            <div className="third-row">
+                <OSKey name="ENTER" type="action" />
+                <OSKey name="Z" type="letter" />
+                <OSKey name="X" type="letter" />
+                <OSKey name="C" type="letter" />
+                <OSKey name="V" type="letter" />
+                <OSKey name="B" type="letter" />
+                <OSKey name="N" type="letter" />
+                <OSKey name="M" type="letter" />
+                <OSKey name="DEL" type="action" />
+            </div>
+
         </div>
     )
 }

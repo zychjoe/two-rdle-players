@@ -1,7 +1,7 @@
 import React from "react"
 import './OSKey.css'
 
-function (props){
+function OSKey(props){
     return(
         <button className="osk" data-type={props.type}
                 onClick={props.onClick}>
