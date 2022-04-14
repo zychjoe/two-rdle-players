@@ -9,7 +9,7 @@
 #player-heading{
     padding:0%;
     margin: 0%;
-    font-size: 25px;
+    font-size: 30px;
 }
 
 #twordle-heading{
@@ -19,7 +19,7 @@
 }
 
 #twordle-heading .g-letter{
-    height: 30px;
-    width: 30px;
-    font-size: 10px;
+    height: 40px;
+    width: 40px;
+    font-size: 15px;
 }
