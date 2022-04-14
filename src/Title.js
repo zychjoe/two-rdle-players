@@ -2,6 +2,11 @@ import React from 'react'
 import GuessLetter from './GuessLetter'
 import './Title.css'
 
+
+/*
+ * The Title box will always be on top of the game. This element is completely
+ * static.
+ */
 function Title(){
     return(
         <div className="title">
