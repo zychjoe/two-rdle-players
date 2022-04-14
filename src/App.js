@@ -1,5 +1,6 @@
 import './App.css'
 import GuessRow from './GuessRow.js'
+import OSKeyBoard from './OSKeyBoard.js'
 import Title from './Title.js'
 
 function App() {
@@ -11,6 +12,7 @@ function App() {
       <GuessRow />
       <GuessRow />
       <GuessRow />
+      <OSKeyBoard />
     </div>
   )
 }
