@@ -6,9 +6,9 @@ import './Guessing.css'
 function Guessing(props){
 
     const [row0, setRow0] = useState({"letters" : [{"value": "B", "result": ""},
+                                                   {"value": "L", "result": ""},
                                                    {"value": "O", "result": ""},
-                                                   {"value": "O", "result": ""},
-                                                   {"value": "E", "result": ""},
+                                                   {"value": "A", "result": ""},
                                                    {"value": "T", "result": ""}],
                                       "canChange" : true,
                                       "index" : 0})
@@ -45,56 +45,74 @@ function Guessing(props){
                                       "canChange" : true,
                                       "index" : 2})
 
-    const grid = [(update) => setRow0(update),
-                  (update) => setRow1(update),
-                  (update) => setRow2(update),
-                  (update) => setRow3(update),
-                  (update) => setRow4(update)]
+    const grid = [row0,
+                  row1,
+                  row2,
+                  row3,
+                  row4]
 
-        /*
-         * CheckGuess will be called on the click of the 'ENTER' OSKey.
-         * 
-         * We want to check the given GuessRow against the answer.
-         * 
-         * First, we want to find all GuessLetters in the correct position and
-         * set their 'result' to "perfect".
-         * 
-         * If all five GuessLetters are in the right place, we want to set
-         * IsSolved to true and end the game.
-         * 
-         * If the guess is not completely correct, we want to find any
-         * letters that are in the answer but haven't been put in the
-         * correct position and set their 'result' to "close".
-         * 
-         * Any remaining letters should have their 'result' set to "miss"
-         *
-         * 
-         * EXAMPLES:
-         * 
-         * Answer -> [M][O][V][I][E]
-         * Guess  -> [S][T][O][V][E]
-         * 
-         * Result-->
-         * 
-         *               [S]    [T]    [O]    [V]    [E]
-         *              miss    miss  close  close  perfect
-         * -------------------------------------------------------
-         * Answer -> [B][E][E][R][S]
-         * Guess  -> [E][E][R][I][E]
-         * 
-         * Result-->
-         * 
-         *               [E]    [E]    [R]    [I]    [E]
-         *             close  perfect close   miss   miss
-         * -------------------------------------------------------
-         * Answer -> [B][L][O][K][E]
-         * Guess  -> [B][O][O][S][T]
-         * 
-         * Result-->
-         * 
-         *               [B]    [O]    [O]    [S]    [T]
-         *             perfect  miss perfect  miss  miss
-         */
+    const rowSetters = [(update) => setRow0(update),
+                        (update) => setRow1(update),
+                        (update) => setRow2(update),
+                        (update) => setRow3(update),
+                        (update) => setRow4(update)]
+
+
+    const guessRowFinder = () => {
+        for (let row of grid){
+            if(row.canChange){
+                return row
+            }
+            else{
+                throw new Error("GuessRowFinder: There's no guesses left!")
+            }
+        }
+    }
+
+    /*
+    * CheckGuess will be called on the click of the 'ENTER' OSKey.
+    * 
+    * We want to check the given GuessRow against the answer.
+    * 
+    * First, we want to find all GuessLetters in the correct position and
+    * set their 'result' to "perfect".
+    * 
+    * If all five GuessLetters are in the right place, we want to set
+    * IsSolved to true and end the game.
+    * 
+    * If the guess is not completely correct, we want to find any
+    * letters that are in the answer but haven't been put in the
+    * correct position and set their 'result' to "close".
+    * 
+    * Any remaining letters should have their 'result' set to "miss"
+    *
+    * 
+    * EXAMPLES:
+    * 
+    * Answer -> [M][O][V][I][E]
+    * Guess  -> [S][T][O][V][E]
+    * 
+    * Result-->
+    * 
+    *               [S]    [T]    [O]    [V]    [E]
+    *              miss    miss  close  close  perfect
+    * -------------------------------------------------------
+    * Answer -> [B][E][E][R][S]
+    * Guess  -> [E][E][R][I][E]
+    * 
+    * Result-->
+    * 
+    *               [E]    [E]    [R]    [I]    [E]
+    *             close  perfect close   miss   miss
+    * -------------------------------------------------------
+    * Answer -> [B][L][O][K][E]
+    * Guess  -> [B][O][O][S][T]
+    * 
+    * Result-->
+    * 
+    *               [B]    [O]    [O]    [S]    [T]
+    *             perfect  miss perfect  miss  miss
+    */
     const checkGuess = (guess, index) => {
         let winningSoFar = true;
         let answerTracker = [{"value" : props.answer[0], "unmatched" : true},
@@ -151,7 +169,7 @@ function Guessing(props){
             console.log(guessWithMisses[3])
             console.log(guessWithMisses[4])
 
-            grid[index]({"letters": guess,
+            rowSetters[index]({"letters": guess,
                         "canChange" :false,
                         "index" : index}) 
         }
@@ -166,7 +184,7 @@ function Guessing(props){
             <GuessRow id="row2" letters={row2.letters} />
             <GuessRow id="row3" letters={row3.letters} />
             <GuessRow id="row4" letters={row4.letters} />
-            <OSKeyBoard onEnter={() => {checkGuess(row0.letters, row0.index)}}/>
+            <OSKeyBoard currentRow={guessRowFinder()} rowSetters={rowSetters} onEnter={() => {checkGuess(row0.letters, row0.index)}}/>
         </div>
     )
 }
