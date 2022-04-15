@@ -5,7 +5,7 @@ import Title from './Title.js'
 
 function App() {
 
-const [answer, setAnswer] = useState(["A", "P", "P", "L", "E"])
+const [answer, setAnswer] = useState(["B", "L", "O", "K", "E"])
 
   return (
     <div className="App">

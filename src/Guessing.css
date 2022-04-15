@@ -1,0 +1,5 @@
+.guessing-screen{
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+}

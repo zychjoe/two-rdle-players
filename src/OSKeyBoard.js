@@ -35,7 +35,7 @@ function OSKeyBoard(props){
                 <OSKey name="L" type="letter" />
             </div>
             <div className="third-row">
-                <OSKey name="ENTER" type="action" />
+                <OSKey name="ENTER" type="action" onClick={props.onEnter}/>
                 <OSKey name="Z" type="letter" />
                 <OSKey name="X" type="letter" />
                 <OSKey name="C" type="letter" />
