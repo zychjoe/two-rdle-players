@@ -1,14 +1,16 @@
 import './App.css'
-import GuessRow from './GuessRow.js'
-import OSKeyBoard from './OSKeyBoard.js'
+import React, {useState} from 'react'
 import Guessing from './Guessing.js'
 import Title from './Title.js'
 
 function App() {
+
+const [answer, setAnswer] = useState(["A", "P", "P", "L", "E"])
+
   return (
     <div className="App">
       <Title />
-      <Guessing />
+      <Guessing answer={answer}/>
     </div>
   )
 }

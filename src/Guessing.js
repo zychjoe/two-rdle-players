@@ -41,6 +41,8 @@ function Guessing(props){
                                       true])
 
     const grid = [row0, row1, row2, row3, row4]
+
+
     return(
         <div className="guessing-screen">
             <GuessRow id="row0" letters={row0} />
