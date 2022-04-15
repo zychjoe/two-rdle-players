@@ -18,6 +18,7 @@ import './GuessLetter.css'
  * 'result' will be "perfect".
  */
 function GuessLetter(props){
+
     return(
         <div className="g-letter" data-result={props.result}>
             <h1>{props.value}</h1>
