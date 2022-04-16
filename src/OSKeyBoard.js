@@ -30,10 +30,7 @@ function OSKeyBoard(props){
             }
         }
     }
-
-    return(
-        <div className="oskb">
-            <div className="first-row">
+/*
 
                 <OSKey name="Q" type="letter" onClick={() => {nextLetterFiller("Q")}} result={keyResultUpdater("Q")} />
                 <OSKey name="W" type="letter" onClick={() => {nextLetterFiller("W")}} result={keyResultUpdater("W")} />
@@ -45,8 +42,8 @@ function OSKeyBoard(props){
                 <OSKey name="I" type="letter" onClick={() => {nextLetterFiller("I")}} result={keyResultUpdater("I")} />
                 <OSKey name="O" type="letter" onClick={() => {nextLetterFiller("O")}} result={keyResultUpdater("O")} />
                 <OSKey name="P" type="letter" onClick={() => {nextLetterFiller("P")}} result={keyResultUpdater("P")} />
-            </div>
-            <div className="second-row">
+
+
                 <OSKey name="A" type="letter" onClick={() => {nextLetterFiller("A")}} result={keyResultUpdater("A")} />
                 <OSKey name="S" type="letter" onClick={() => {nextLetterFiller("S")}} result={keyResultUpdater("S")} />
                 <OSKey name="D" type="letter" onClick={() => {nextLetterFiller("D")}} result={keyResultUpdater("D")} />
@@ -56,9 +53,8 @@ function OSKeyBoard(props){
                 <OSKey name="J" type="letter" onClick={() => {nextLetterFiller("J")}} result={keyResultUpdater("J")} />
                 <OSKey name="K" type="letter" onClick={() => {nextLetterFiller("K")}} result={keyResultUpdater("K")} />
                 <OSKey name="L" type="letter" onClick={() => {nextLetterFiller("L")}} result={keyResultUpdater("L")} />
-            </div>
-            <div className="third-row">
-                <OSKey name="ENTER" type="action" onClick={props.onEnter} result="" />
+
+
                 <OSKey name="Z" type="letter" onClick={() => {nextLetterFiller("Z")}} result={keyResultUpdater("Z")} />
                 <OSKey name="X" type="letter" onClick={() => {nextLetterFiller("X")}} result={keyResultUpdater("X")} />
                 <OSKey name="C" type="letter" onClick={() => {nextLetterFiller("C")}} result={keyResultUpdater("C")} />
@@ -66,6 +62,34 @@ function OSKeyBoard(props){
                 <OSKey name="B" type="letter" onClick={() => {nextLetterFiller("B")}} result={keyResultUpdater("B")} />
                 <OSKey name="N" type="letter" onClick={() => {nextLetterFiller("N")}} result={keyResultUpdater("N")} />
                 <OSKey name="M" type="letter" onClick={() => {nextLetterFiller("M")}} result={keyResultUpdater("M")} />
+                */
+
+    
+    const oskbRow0 = ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"]
+    const oskbRow1 = ["A", "S", "D", "F", "G", "H", "J", "K", "L"]
+    const oskbRow2 = ["Z", "X", "C", "V", "B", "N", "M"]
+
+
+    return(
+        <div className="oskb">
+            <div className="top-row">
+                {oskbRow0.map(val => <OSKey name={val}
+                                            type="letter"
+                                            onClick={() => nextLetterFiller(val)}
+                                            result={keyResultUpdater(val)} />)}
+            </div>
+            <div className="middle-row">
+            {oskbRow1.map(val => <OSKey name={val}
+                                            type="letter"
+                                            onClick={() => nextLetterFiller(val)}
+                                            result={keyResultUpdater(val)} />)}
+            </div>
+            <div className="final-row">
+                <OSKey name="ENTER" type="action" onClick={props.onEnter} result="" />
+                {oskbRow2.map(val => <OSKey name={val}
+                                            type="letter"
+                                            onClick={() => nextLetterFiller(val)}
+                                            result={keyResultUpdater(val)} />)}
                 <OSKey name="DEL" type="action" result="" />
             </div>
 
