@@ -30,8 +30,21 @@ function OSKeyBoard(props){
             }
         }
     }
-/*
 
+    const lastLetterRemover = () => {
+        let currRow = props.currentRow 
+        for(let i = 4; i >= 0; i--){
+            if(currRow.letters[i].value !== ""){
+                currRow.letters[i].value = ""
+                props.rowSetters[currRow.index]({"letters": currRow.letters,
+                                                "canChange" : currRow.canChange,
+                                                "index" : currRow.index})
+                break
+            }
+        }
+    }
+                /*
+                OLD KEYBOARD CONSTRUCTION - IGNORE
                 <OSKey name="Q" type="letter" onClick={() => {nextLetterFiller("Q")}} result={keyResultUpdater("Q")} />
                 <OSKey name="W" type="letter" onClick={() => {nextLetterFiller("W")}} result={keyResultUpdater("W")} />
                 <OSKey name="E" type="letter" onClick={() => {nextLetterFiller("E")}} result={keyResultUpdater("E")} />
@@ -90,7 +103,7 @@ function OSKeyBoard(props){
                                             type="letter"
                                             onClick={() => nextLetterFiller(val)}
                                             result={keyResultUpdater(val)} />)}
-                <OSKey name="DEL" type="action" result="" />
+                <OSKey name="DEL" type="action" onClick={() => lastLetterRemover()} result="" />
             </div>
 
         </div>
