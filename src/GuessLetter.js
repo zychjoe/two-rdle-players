@@ -3,7 +3,7 @@ import './GuessLetter.css'
 
 
 /*
- * GuessLetter is one of five elements in a GuessRow. It has a value (string)
+ * GuessLetter represents a game square. It has a value (string)
  * and a result (string).
  * 
  * The 'value' property can be either the empty string or a single capital
