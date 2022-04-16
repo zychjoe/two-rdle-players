@@ -3,7 +3,9 @@ import './OSKey.css'
 
 function OSKey(props){
     return(
-        <button className="osk" data-type={props.type}
+        <button className="osk" 
+                data-type={props.type}
+                data-result={props.result}
                 onClick={props.onClick}>
                     {props.name}
         </button>

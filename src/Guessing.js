@@ -5,11 +5,13 @@ import './Guessing.css'
 
 function Guessing(props){
 
-    const [row0, setRow0] = useState({"letters" : [{"value": "B", "result": ""},
-                                                   {"value": "L", "result": ""},
-                                                   {"value": "O", "result": ""},
-                                                   {"value": "A", "result": ""},
-                                                   {"value": "T", "result": ""}],
+    let p1Won = false;
+
+    const [row0, setRow0] = useState({"letters" : [{"value": "", "result": ""},
+                                                   {"value": "", "result": ""},
+                                                   {"value": "", "result": ""},
+                                                   {"value": "", "result": ""},
+                                                   {"value": "", "result": ""}],
                                       "canChange" : true,
                                       "index" : 0})
 
@@ -43,7 +45,7 @@ function Guessing(props){
                                                    {"value": "", "result": ""},
                                                    {"value": "", "result": ""}],
                                       "canChange" : true,
-                                      "index" : 2})
+                                      "index" : 4})
 
     const grid = [row0,
                   row1,
@@ -58,14 +60,68 @@ function Guessing(props){
                         (update) => setRow4(update)]
 
 
+    const resultTracker = () => {
+        let results = []
+        for (let row of grid) {
+            for (let letter of row.letters){
+                if(results.includes(letter) || letter.result === ""){
+                    continue
+                }
+
+                if(results.reduce(((prev, curr) => prev 
+                                  && (curr.value !== letter.value)),
+                                  true)){
+                    results.push(letter)
+                    continue
+                }
+
+                if(results.reduce(((prev, curr) => prev 
+                                   || (curr.value == letter.value
+                                       && curr.result === "perfect")),
+                                  false)){
+                    continue
+                }
+
+                switch (letter.result){
+                    case "perfect":
+                        let newResults = results.map(rLetter => {
+                            if (rLetter.value === letter.value){
+                                return letter
+                            }
+                            else{
+                                return rLetter
+                            }
+                        })
+
+                        results = newResults
+                    case "close":
+                        let newerResults = results.map(rLetter => {
+                            if (rLetter.value === letter.value && rLetter.result === "miss"){
+                                return letter
+                            }
+                            else{
+                                return rLetter
+                            }
+                        })
+                    
+                        default:
+                            continue
+                }
+
+            }
+
+        }
+        return results
+    }
+
+
     const guessRowFinder = () => {
         for (let row of grid){
             if(row.canChange){
+
                 return row
             }
-            else{
-                throw new Error("GuessRowFinder: There's no guesses left!")
-            }
+            p1Won = true;
         }
     }
 
@@ -113,13 +169,17 @@ function Guessing(props){
     *               [B]    [O]    [O]    [S]    [T]
     *             perfect  miss perfect  miss  miss
     */
-    const checkGuess = (guess, index) => {
+    const checkGuess = (gRow) => {
         let winningSoFar = true;
         let answerTracker = [{"value" : props.answer[0], "unmatched" : true},
                              {"value" : props.answer[1], "unmatched" : true},
                              {"value" : props.answer[2], "unmatched" : true},
                              {"value" : props.answer[3], "unmatched" : true},
                              {"value" : props.answer[4], "unmatched" : true}]
+        let guess = gRow.letters
+        let index = gRow.index
+        console.log("ENTER")
+        let newResults = []
       
 
     // First, we check if the given GuesRow has five filled letters.
@@ -184,7 +244,7 @@ function Guessing(props){
             <GuessRow id="row2" letters={row2.letters} />
             <GuessRow id="row3" letters={row3.letters} />
             <GuessRow id="row4" letters={row4.letters} />
-            <OSKeyBoard currentRow={guessRowFinder()} rowSetters={rowSetters} onEnter={() => {checkGuess(row0.letters, row0.index)}}/>
+            <OSKeyBoard keyResults={resultTracker()} currentRow={guessRowFinder()} rowSetters={rowSetters} onEnter={() => {checkGuess(guessRowFinder())}} />
         </div>
     )
 }

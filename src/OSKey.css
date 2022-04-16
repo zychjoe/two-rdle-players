@@ -15,6 +15,18 @@ button[data-type="letter"]{
     width: 35px;
 }
 
+button[data-result="miss"]{
+    background-color: #3a3a3c;
+}
+
+button[data-result="close"]{
+    background-color: #b59f3b;
+}
+
+button[data-result="perfect"]{
+    background-color: #538d4e;
+}
+
 button[data-type="action"]{
     font-size: 15px;
     width: 60px;
