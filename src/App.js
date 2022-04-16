@@ -5,17 +5,39 @@ import Player1Intro from './Player1Intro'
 import Play from './Play.js'
 
 
+/*
+* Main App component
+*/
 function App() {
 
-  const [gameDisplay, setGameDisplay] = useState("player1Intro")
-  const [answer, setAnswer] = useState(["C", "O", "K", "E", "S"])
-  const [playerNames, setPlayerNames] = useState({"player1" : "", "player2" : ""})
-  
+  /****************************************************************************
+   * STATE HOOKS
+   ***************************************************************************/
 
+  //'gameDisplay' keeps track of the game stage
+  const [gameDisplay, setGameDisplay] = useState("play")
+  //'answer' ultimately holds player1's input answer for player 2 to guess
+  const [answer, setAnswer] = useState(["G", "A", "M", "E", "R"])
+  //fields to hold the players' names
+  const [playerNames, setPlayerNames] = useState({"player1" : "",
+                                                  "player2" : ""})
+  
+  /****************************************************************************
+   * HELPER FUNCTIONS
+   ***************************************************************************/
+
+  /*
+  * screenDisplayer: () ---> <div>
+  * This is the router of the app. Simle switch on the 'gameDisplay' state to
+  * update the user's screen for each game stage.
+  * 
+  * The function always returns a <div>; whatever appropriate js component.
+  */
   const screenDisplayer = () => {
     switch (gameDisplay){
       case "player1Intro":
-        return <Player1Intro setNames={(update) => setPlayerNames(update)} setDisplay={() => setGameDisplay()} />
+        return <Player1Intro setNames={(update) => setPlayerNames(update)}
+                             setDisplay={() => setGameDisplay()} />
       case "wordSelection":
       case "player2Intro":
       case "play":
@@ -23,6 +45,9 @@ function App() {
     }
   }
 
+  /****************************************************************************
+   * RENDER
+   ***************************************************************************/
   return (
     <div className="App">
       <Title />
