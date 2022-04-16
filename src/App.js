@@ -28,7 +28,7 @@ function App() {
 
   /*
   * screenDisplayer: () ---> <div>
-  * This is the router of the app. Simle switch on the 'gameDisplay' state to
+  * This is the router of the app. Simple switch on the 'gameDisplay' state to
   * update the user's screen for each game stage.
   * 
   * The function always returns a <div>; whatever appropriate js component.
