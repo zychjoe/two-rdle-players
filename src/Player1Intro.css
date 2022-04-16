@@ -1,0 +1,11 @@
+.p1-intro{
+    display: flex;
+    flex-flow: column wrap;
+    align-self: center;
+    justify-self: center;
+    color: #FFF;
+}
+
+p{
+    font-weight: bolder;
+}

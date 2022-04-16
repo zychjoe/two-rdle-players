@@ -1,9 +1,9 @@
 import React, {useState} from "react"
 import GuessRow from "./GuessRow"
 import OSKeyBoard from "./OSKeyBoard"
-import './Guessing.css'
+import './Play.css'
 
-function Guessing(props){
+function Play(props){
 
     let p1Won = false;
 
@@ -249,4 +249,4 @@ function Guessing(props){
     )
 }
 
-export default Guessing
+export default Play
