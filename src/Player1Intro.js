@@ -1,6 +1,21 @@
 import React, {useSate} from "react"
 import './Player1Intro.css'
 
+
+/*************************************************************
+ * 
+ *                 NOTHING
+ *                    
+ *                      TO
+ * 
+ *                         SEE
+ * 
+ *                              HERE!
+ * 
+ * 
+ */
+
+
 function Player1Intro(props) {
 
     

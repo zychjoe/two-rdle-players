@@ -12,13 +12,13 @@ function Title(){
         <div className="title">
             <h1 id="player-heading">PLAYER</h1>
             <div id="twordle-heading">
-            <GuessLetter value="T" result="perfect" />
-            <GuessLetter value="W" result="close" />
+            <GuessLetter value="T" result="close" />
+            <GuessLetter value="W" result="perfect" />
             <GuessLetter value="O" result="" />
-            <GuessLetter value="R" result="perfect" />
-            <GuessLetter value="D" result="close" />
-            <GuessLetter value="L" result="" />
-            <GuessLetter value="E" result="perfect" />
+            <GuessLetter value="R" result="miss" />
+            <GuessLetter value="D" result="miss" />
+            <GuessLetter value="L" result="miss" />
+            <GuessLetter value="E" result="miss" />
             </div>
         </div>
     )
