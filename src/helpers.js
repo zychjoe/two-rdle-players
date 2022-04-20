@@ -24,59 +24,7 @@ export const screenDisplayer = (gameDisplay, setPlayerNames, setGameDisplay, ans
     }
     }
 
-/*
- * isEnglish : [letter objects] -> boolean
- * This function will take an array of letter objects, convert their values
- * into a string and check that string against an English dictionary API.
- * If the word is an English word, it will return 'true', if not, 'false'.
- * 
- * NOTE: This function is called AFTER a check to make sure each letter
- * object has a value. There will never be a call with an incomplete
- * guess.
- * 
- * EXAMPLES:
- * 
- * Given: [{"value": "B", "result": ""},
- *         {"value": "O", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "U", "result": ""},
- *         {"value": "S", "result": ""}]
- * 
- * Return: true
- * ----------------------------------------------------------------------
- * 
- * Given: [{"value": "B", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "S", "result": ""}]
- * 
- * Return: false
- */
-export const checkEnglish = (gRow, answer, rowSetters) => {
-    // First, let's turn the array into a string & add it to the API URL
-    const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
-    const apiUrl = 'https://wordsapiv1.p.rapidapi.com/words/' + guessString
 
-    const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com',
-            'X-RapidAPI-Key': api.api
-        }
-    }
-
-    fetch(apiUrl, options)
-                    .then(response => {
-                        if (response.ok) {
-                            checkGuess(answer, gRow, rowSetters)
-                        }
-                        else{
-                            console.log("Not a word")
-                        }
-                    })
-                    .catch(err => console.error(err))
-}
 
 
 /*
@@ -88,20 +36,39 @@ export const isFilled = (letters) => {
 }
 
 
-export const checkGreens = (guess, aTracker) => {
+export const checkGreens = (guess, answerTracker) => {
     let winningSoFar = true
     for(let i = 0; i < 5; i++){
-        if(guess[i].value === aTracker[i].value){
+        if(guess[i].value === answerTracker[i].value){
             guess[i].result = "perfect";
-            aTracker[i].unmatched = false;
+            answerTracker[i].unmatched = false;
         }
         else{
             winningSoFar = false;
         }
     }
-    return [guess, winningSoFar]
+    return [guess, answerTracker, winningSoFar]
 }
 
+
+export const checkYellows = (answerGreened, guessGreened) =>{
+    for(let aLetter of answerGreened){
+        for(let gLetter of guessGreened){
+            if(!aLetter.unmatched){
+                break
+            }
+            if(gLetter.result !== "close"
+               && gLetter.result !== "perfect"
+               && gLetter.value == aLetter.value){
+                    gLetter.result = "close";
+                    aLetter.unmatched = false;
+                    break;
+            }
+        }
+    }
+
+    return guessGreened
+}
 
 /*
 * checkGuess: (GuessRow) ---> void
@@ -157,47 +124,83 @@ export const checkGuess = (answer, gRow, rowSetters) => {
                         
     //Now, let's see how many GuessLetters are in the right place.
     // If all five are perfect, we'll use 'winningSoFar' to end the game.
-    let [guess, p2Wins] = checkGreens(gRow.letters, answerTracker)
+    let [guessGreened, answerGreened, p2Wins] = checkGreens(gRow.letters, answerTracker)
 
-    //Since we're still here, we know the answer was not completely correct.
-    // We need to check any remaining GuessLetters against any remaining
-    // lettters in the answer, while minding duplicates.
+    
     if(!p2Wins){
-        for(let aLetter of answerTracker){
-            for(let gLetter of guess){
-                if(!aLetter.unmatched){
-                    break
-                }
-                if(gLetter.result !== "close"
-                    && gLetter.result !== "perfect"
-                    && gLetter.value == aLetter.value){
-                    gLetter.result = "close";
-                    aLetter.unmatched = false;
-                    break;
-                }
-            }
+        //Since we're still here, we know the answer was not completely correct.
+        // We need to check any remaining GuessLetters against any remaining
+        // lettters in the answer, while minding duplicates.
+        let guessYellowed = checkYellows(answerGreened, guessGreened)
+
+        //Finally, we need to record our guessed letters absent from the answer.
+        let guessChecked = guessYellowed.map((letter) => {
+                                            if(letter.result === ""){
+                                                letter.result = "miss"
+                                            }
+                                            return letter
+                                        })
+
+        //And we'll update the state and re-render.
+        rowSetters[gRow.index]({"letters": guessChecked,
+                                "canChange" :false,
+                                "index" : gRow.index})
+    }
+}
+
+/*
+ * isEnglish : [letter objects] -> boolean
+ * This function will take an array of letter objects, convert their values
+ * into a string and check that string against an English dictionary API.
+ * If the word is an English word, it will return 'true', if not, 'false'.
+ * 
+ * NOTE: This function is called AFTER a check to make sure each letter
+ * object has a value. There will never be a call with an incomplete
+ * guess.
+ * 
+ * EXAMPLES:
+ * 
+ * Given: [{"value": "B", "result": ""},
+ *         {"value": "O", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "U", "result": ""},
+ *         {"value": "S", "result": ""}]
+ * 
+ * Return: true
+ * ----------------------------------------------------------------------
+ * 
+ * Given: [{"value": "B", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "S", "result": ""}]
+ * 
+ * Return: false
+ */
+export const checkEnglish = (gRow, answer, rowSetters) => {
+    // First, let's turn the array into a string & add it to the API URL
+    const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
+    const apiUrl = 'https://wordsapiv1.p.rapidapi.com/words/' + guessString
+
+    const options = {
+        method: 'GET',
+        headers: {
+            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com',
+            'X-RapidAPI-Key': api.api
         }
     }
 
-    //Finally, we need to record our guessed letters absent from the answer.
-    guess = guess.map(
-                (letter) => {
-                    if(letter.result === ""){
-                        letter.result = "miss"
-                    }
-                    return letter
-                })
-
-    //And we'll update the state and re-render.
-    rowSetters[gRow.index]({"letters": guess,
-                "canChange" :false,
-                "index" : gRow.index})
+    fetch(apiUrl, options)
+                    .then(response => {
+                        if (response.ok) {
+                            checkGuess(answer, gRow, rowSetters)
+                        }
+                        else{
+                            console.log("Not a word")
+                        }
+                    })
+                    .catch(err => console.error(err))
 }
-
-
-
-
-
 
 export const onPlayEnter = (gRow, answer, rowSetters) => {
 // First, we check if the given GuessRow has five filled letters && if
