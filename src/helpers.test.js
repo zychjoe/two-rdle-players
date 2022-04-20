@@ -23,10 +23,9 @@ describe("screenDisplayer", () => {
                                     () => "bar",
                                     testvalues.answer)).toThrow("screenDisplayer: Not a valid gameDisplay!")})
 })
-
-
-
+/* 
 describe("isEnglish", () => {
-    it("should return true", () => {
-        expect(isEnglish(testvalues.lettersToCheck)).toEqual(true)})
-})
+    it("should return true", async () => {
+        const result = await isEnglish(testvalues.lettersToCheck)
+        expect(result).toBe(true)})
+}) */
