@@ -1,15 +1,13 @@
 import './App.css'
 import React, {useState} from 'react'
 import Title from './Title.js'
-import Player1Intro from './Player1Intro'
-import Play from './Play.js'
+import { screenDisplayer } from './helpers.js'
 
 
 /*
 * Main App component
 */
 function App() {
-
   /****************************************************************************
    * STATE HOOKS
    ***************************************************************************/
@@ -21,6 +19,7 @@ function App() {
   //fields to hold the players' names
   const [playerNames, setPlayerNames] = useState({"player1" : "",
                                                   "player2" : ""})
+
   
   /****************************************************************************
    * HELPER FUNCTIONS
@@ -33,7 +32,7 @@ function App() {
   * 
   * The function always returns a <div>; whatever appropriate js component.
   */
-  const screenDisplayer = () => {
+/*   const screenDisplayer = () => {
     switch (gameDisplay){
       case "player1Intro":
         return <Player1Intro setNames={(update) => setPlayerNames(update)}
@@ -42,8 +41,10 @@ function App() {
       case "player2Intro":
       case "play":
         return <Play answer={answer}/>
+      default:
+        throw new Error("screenDisplayer: Not a valid gameDisplay!")
     }
-  }
+  } */
 
   /****************************************************************************
    * RENDER
@@ -51,7 +52,7 @@ function App() {
   return (
     <div className="App">
       <Title />
-      {screenDisplayer()}
+      {screenDisplayer(gameDisplay, () => setPlayerNames(), () => setPlayerNames(), answer)}
     </div>
   )
 }
