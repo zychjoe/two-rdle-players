@@ -146,6 +146,12 @@ export const checkGuess = (answer, gRow, rowSetters) => {
                                 "canChange" :false,
                                 "index" : gRow.index})
     }
+    else {
+        //And we'll update the state and re-render.
+        rowSetters[gRow.index]({"letters": guessGreened,
+                                "canChange" :false,
+                                "index" : gRow.index})
+    }
 }
 
 /*
