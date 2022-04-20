@@ -1,6 +1,7 @@
 import React from 'react'
 import Player1Intro from './Player1Intro'
 import Play from './Play.js'
+import api from './api.json'
   
 /*
  * screenDisplayer: state variables ---> <div>
@@ -35,37 +36,43 @@ export const screenDisplayer = (gameDisplay, setPlayerNames, setGameDisplay, ans
  * 
  * EXAMPLES:
  * 
- * Given: {[{"value": "B", "result": ""},
- *          {"value": "O", "result": ""},
- *          {"value": "N", "result": ""},
- *          {"value": "U", "result": ""},
- *          {"value": "S", "result": ""}]}
+ * Given: [{"value": "B", "result": ""},
+ *         {"value": "O", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "U", "result": ""},
+ *         {"value": "S", "result": ""}]
  * 
  * Return: true
  * ----------------------------------------------------------------------
  * 
- * Given: {[{"value": "B", "result": ""},
- *          {"value": "N", "result": ""},
- *          {"value": "N", "result": ""},
- *          {"value": "N", "result": ""},
- *          {"value": "S", "result": ""}]}
+ * Given: [{"value": "B", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "N", "result": ""},
+ *         {"value": "S", "result": ""}]
  * 
  * Return: false
  */
 export const isEnglish = (letters) => {
     // First, let's turn the array into a string
-    let guess = letters.reduce((prev, curr => prev + curr.value), "")
+    const guess = letters.reduce(((prev, curr) => prev + curr.value), "")
+    const apiUrl = 'https://wordsapiv1.p.rapidapi.com/words/' + guess
 
     const options = {
         method: 'GET',
         headers: {
             'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com',
-            'X-RapidAPI-Key': ''
+            'X-RapidAPI-Key': api.api
         }
-    };
+    }
     
-    fetch('https://wordsapiv1.p.rapidapi.com/words/' + guess, options)
-        .then(response => response.json())
-        .then(response => console.log(response))
-        .catch(err => console.error(err));
+    let didFetch
+
+    fetch(apiUrl, options)
+                    .then(response => {
+                        didFetch = response.ok
+                        console.log(didFetch)})
+                    .catch(err => console.error(err))
+
+    return didFetch
 }

@@ -1,3 +1,8 @@
 {
-    "answer" : ["G", "A", "M", "E", "R"]
+    "answer" : ["G", "A", "M", "E", "R"],
+    "lettersToCheck" : [{"value": "B", "result": ""},
+                        {"value": "O", "result": ""},
+                        {"value": "N", "result": ""},
+                        {"value": "U", "result": ""},
+                        {"value": "S", "result": ""}]
 }

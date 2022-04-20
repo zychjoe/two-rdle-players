@@ -1,7 +1,7 @@
 import './App.css'
 import React, {useState} from 'react'
 import Title from './Title.js'
-import { screenDisplayer } from './helpers.js'
+import { screenDisplayer, isEnglish } from './helpers.js'
 import testvalues from './testvalues.json'
 
 

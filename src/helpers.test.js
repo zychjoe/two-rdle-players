@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react'
-import { screenDisplayer } from './helpers'
+import { queryHelpers, render, screen } from '@testing-library/react'
+import { screenDisplayer, isEnglish } from './helpers'
 import Play from './Play'
 import testvalues from './testvalues.json'
 
@@ -22,4 +22,11 @@ describe("screenDisplayer", () => {
                                     () => "foo",
                                     () => "bar",
                                     testvalues.answer)).toThrow("screenDisplayer: Not a valid gameDisplay!")})
+})
+
+
+
+describe("isEnglish", () => {
+    it("should return true", () => {
+        expect(isEnglish(testvalues.lettersToCheck)).toEqual(true)})
 })
