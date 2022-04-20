@@ -132,9 +132,12 @@ export const isEnglish = (gRow, answer, rowSetters) => {
 }
 
 
-
+/*
+ * isFilled: [letter objects] -> booleans
+ * Returns true if all letters in the array have non=empty values.
+ */
 const isFilled = (letters) => {
-    return letters[4].value !== ""
+    return letters.reduce((prev, letter) => prev && letter.value !== "", true)
 }
 
 
