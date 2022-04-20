@@ -2,6 +2,7 @@ import './App.css'
 import React, {useState} from 'react'
 import Title from './Title.js'
 import { screenDisplayer } from './helpers.js'
+import testvalues from './testvalues.json'
 
 
 /*
@@ -15,36 +16,11 @@ function App() {
   //'gameDisplay' keeps track of the game stage
   const [gameDisplay, setGameDisplay] = useState("play")
   //'answer' ultimately holds player1's input answer for player 2 to guess
-  const [answer, setAnswer] = useState(["G", "A", "M", "E", "R"])
+  const [answer, setAnswer] = useState(testvalues.answer)
   //fields to hold the players' names
   const [playerNames, setPlayerNames] = useState({"player1" : "",
                                                   "player2" : ""})
 
-  
-  /****************************************************************************
-   * HELPER FUNCTIONS
-   ***************************************************************************/
-
-  /*
-  * screenDisplayer: () ---> <div>
-  * This is the router of the app. Simple switch on the 'gameDisplay' state to
-  * update the user's screen for each game stage.
-  * 
-  * The function always returns a <div>; whatever appropriate js component.
-  */
-/*   const screenDisplayer = () => {
-    switch (gameDisplay){
-      case "player1Intro":
-        return <Player1Intro setNames={(update) => setPlayerNames(update)}
-                             setDisplay={() => setGameDisplay()} />
-      case "wordSelection":
-      case "player2Intro":
-      case "play":
-        return <Play answer={answer}/>
-      default:
-        throw new Error("screenDisplayer: Not a valid gameDisplay!")
-    }
-  } */
 
   /****************************************************************************
    * RENDER
