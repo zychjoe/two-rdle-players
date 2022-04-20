@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react'
-import App, {answer, screenDisplayer} from './App'
-import Play from './Play.js'
+import App from './App'
 
 it('renders without crashing', () => {
   render(<App />)
@@ -12,13 +11,4 @@ test('renders w/ title', () => {
   expect(linkElement).toBeInTheDocument()
 })
 
-
-const gameStages = [{"given" : "play",
-                     "expected" : <Play answer={answer}/>}]
-
-for(let stage of gameStages){
-  render(<App />)
-  describe("screenDisplayer", () => {
-    it('should accept ' + stage.given, () => expect(screenDisplayer(stage.given).toBe(stage.expected)))})
-}
 
