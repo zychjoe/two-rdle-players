@@ -2,7 +2,7 @@ import React, {useState} from "react"
 import GuessRow from "./GuessRow"
 import OSKeyBoard from "./OSKeyBoard"
 import './Play.css'
-import { checkGuess } from './helpers'
+import { onPlayEnter } from './helpers'
 
 function Play(props){
    /****************************************************************************
@@ -196,7 +196,7 @@ function Play(props){
             <OSKeyBoard keyResults={resultTracker()} 
                         currentRow={guessRowFinder()}
                         rowSetters={rowSetters}
-                        onEnter={() => {checkGuess(guessRowFinder(), props.answer, rowSetters)}} />
+                        onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters)}} />
         </div>
     )
 }

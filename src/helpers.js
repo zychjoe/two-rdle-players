@@ -53,10 +53,9 @@ export const screenDisplayer = (gameDisplay, setPlayerNames, setGameDisplay, ans
  * 
  * Return: false
  */
-export const isEnglish = (gRow, answer, rowSetters) => {
+export const checkEnglish = (gRow, answer, rowSetters) => {
     // First, let's turn the array into a string & add it to the API URL
-    let guess = gRow.letters
-    const guessString = guess.reduce(((prev, curr) => prev + curr.value), "")
+    const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
     const apiUrl = 'https://wordsapiv1.p.rapidapi.com/words/' + guessString
 
     const options = {
@@ -70,59 +69,7 @@ export const isEnglish = (gRow, answer, rowSetters) => {
     fetch(apiUrl, options)
                     .then(response => {
                         if (response.ok) {
-                            let winningSoFar = true;
-                            let answerTracker = [{"value" : answer[0], "unmatched" : true},
-                                                {"value" : answer[1], "unmatched" : true},
-                                                {"value" : answer[2], "unmatched" : true},
-                                                {"value" : answer[3], "unmatched" : true},
-                                                {"value" : answer[4], "unmatched" : true}]
-                            //Now, let's see how many GuessLetters are in the right place.
-                            // If all five are perfect, we'll use 'winningSoFar' to end the game.
-                            for(let i = 0; i < 5; i++){
-                                if(guess[i].value === answerTracker[i].value){
-                                    guess[i].result = "perfect";
-                                    answerTracker[i].unmatched = false;
-                                }
-                                else{
-                                    winningSoFar = false;
-                                }
-                            }
-                            //TODO: figure out "too much rerendering" bug
-                            //setP2Won(winningSoFar)
-
-                            //Since we're still here, we know the answer was not completely correct.
-                            // We need to check any remaining GuessLetters against any remaining
-                            // lettters in the answer, while minding duplicates.
-                            if(!winningSoFar){
-                                for(let aLetter of answerTracker){
-                                    for(let gLetter of guess){
-                                        if(!aLetter.unmatched){
-                                            break
-                                        }
-                                        if(gLetter.result !== "close"
-                                            && gLetter.result !== "perfect"
-                                            && gLetter.value == aLetter.value){
-                                            gLetter.result = "close";
-                                            aLetter.unmatched = false;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-
-                            //Finally, we need to record our guessed letters absent from the answer.
-                            guess = guess.map(
-                                        (letter) => {
-                                            if(letter.result === ""){
-                                                letter.result = "miss"
-                                            }
-                                            return letter
-                                        })
-
-                            //And we'll update the state and re-render.
-                            rowSetters[gRow.index]({"letters": guess,
-                                        "canChange" :false,
-                                        "index" : gRow.index}) 
+                            checkGuess(answer, gRow, rowSetters)
                         }
                         else{
                             console.log("Not a word")
@@ -136,8 +83,23 @@ export const isEnglish = (gRow, answer, rowSetters) => {
  * isFilled: [letter objects] -> booleans
  * Returns true if all letters in the array have non=empty values.
  */
-const isFilled = (letters) => {
+export const isFilled = (letters) => {
     return letters.reduce((prev, letter) => prev && letter.value !== "", true)
+}
+
+
+export const checkGreens = (guess, aTracker) => {
+    let winningSoFar = true
+    for(let i = 0; i < 5; i++){
+        if(guess[i].value === aTracker[i].value){
+            guess[i].result = "perfect";
+            aTracker[i].unmatched = false;
+        }
+        else{
+            winningSoFar = false;
+        }
+    }
+    return [guess, winningSoFar]
 }
 
 
@@ -186,14 +148,63 @@ const isFilled = (letters) => {
 *               [B]    [O]    [O]    [S]    [T]
 *             perfect  miss perfect  miss  miss
 */
-export const checkGuess = (gRow, answer, rowSetters) => {
-    
+export const checkGuess = (answer, gRow, rowSetters) => {
+    var answerTracker = [{"value" : answer[0], "unmatched" : true},
+                        {"value" : answer[1], "unmatched" : true},
+                        {"value" : answer[2], "unmatched" : true},
+                        {"value" : answer[3], "unmatched" : true},
+                        {"value" : answer[4], "unmatched" : true}]
+                        
+    //Now, let's see how many GuessLetters are in the right place.
+    // If all five are perfect, we'll use 'winningSoFar' to end the game.
+    let [guess, p2Wins] = checkGreens(gRow.letters, answerTracker)
 
+    //Since we're still here, we know the answer was not completely correct.
+    // We need to check any remaining GuessLetters against any remaining
+    // lettters in the answer, while minding duplicates.
+    if(!p2Wins){
+        for(let aLetter of answerTracker){
+            for(let gLetter of guess){
+                if(!aLetter.unmatched){
+                    break
+                }
+                if(gLetter.result !== "close"
+                    && gLetter.result !== "perfect"
+                    && gLetter.value == aLetter.value){
+                    gLetter.result = "close";
+                    aLetter.unmatched = false;
+                    break;
+                }
+            }
+        }
+    }
+
+    //Finally, we need to record our guessed letters absent from the answer.
+    guess = guess.map(
+                (letter) => {
+                    if(letter.result === ""){
+                        letter.result = "miss"
+                    }
+                    return letter
+                })
+
+    //And we'll update the state and re-render.
+    rowSetters[gRow.index]({"letters": guess,
+                "canChange" :false,
+                "index" : gRow.index})
+}
+
+
+
+
+
+
+export const onPlayEnter = (gRow, answer, rowSetters) => {
 // First, we check if the given GuessRow has five filled letters && if
 //  the word is a valid English word.
 //  If not, we should just return unchanged.
     if (isFilled(gRow.letters)){
-        isEnglish(gRow, answer, rowSetters)
+        checkEnglish(gRow, answer, rowSetters)
     }
     else{
         console.log("incomplete guess")
