@@ -1,7 +1,6 @@
 import React from 'react'
 import Player1Intro from './Player1Intro'
 import Play from './Play.js'
-import api from './api.json'
   
 /*
  * screenDisplayer: state variables ---> <div>
@@ -186,19 +185,18 @@ export const checkGuess = (answer, gRow, rowSetters) => {
 export const checkEnglish = (gRow, answer, rowSetters) => {
     // First, let's turn the array into a string & add it to the API URL
     const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
-    const apiUrl = 'https://wordsapiv1.p.rapidapi.com/words/' + guessString
+    const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + guessString
 
     const options = {
-        method: 'GET',
-        headers: {
-            'X-RapidAPI-Host': 'wordsapiv1.p.rapidapi.com',
-            'X-RapidAPI-Key': api.api
-        }
+        method: 'GET'
     }
 
     fetch(apiUrl, options)
-                    .then(response => {
-                        if (response.ok) {
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        if (data[0]){
+
                             checkGuess(answer, gRow, rowSetters)
                         }
                         else{
