@@ -35,7 +35,7 @@ const validTestRows =[{"description" : "testRowBlank",
 
 
 for (let testRow of validTestRows) {
-    it('it renders without crashing given' + testRow.description, () => {
+    it('renders without crashing given' + testRow.description, () => {
             render(<GuessRow letters={testRow.row} />)
         })
     }

@@ -1,0 +1,11 @@
+.modal{
+    display: flex;
+    position: fixed;
+    top: 50%;
+    right: 50%;
+    color: #E1E;
+    background-color: turquoise;
+    width: 100px;
+    height: 40px;
+    z-index: 13;
+}

@@ -1,7 +1,8 @@
 import React from 'react'
 import Player1Intro from './Player1Intro'
-import Play from './Play.js'
-  
+import Play from './Play'
+import Modal from './Modal'
+
 /*
  * screenDisplayer: state variables ---> <div>
  * This is the router of the app. Simple switch on the 'gameDisplay' state to
@@ -201,6 +202,7 @@ export const checkEnglish = (gRow, answer, rowSetters) => {
                         }
                         else{
                             console.log("Not a word")
+                            return <text className='not-word'>Not in our word list</ text>
                         }
                     })
                     .catch(err => console.error(err))
