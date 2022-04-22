@@ -1,11 +1,18 @@
-.modal{
-    display: flex;
+.not-a-word{
     position: fixed;
-    top: 50%;
-    right: 50%;
-    color: #E1E;
-    background-color: turquoise;
-    width: 100px;
-    height: 40px;
-    z-index: 13;
+    display: inline-block;
+    top: 10%;
+    left: 43%;
+    color: #FFF;
+    align-items: center;
+    text-align: center;
+    background-color: #818384;
+    width: 200px;
+    height: 50px;
+    border-radius: 4%;
+    z-index: 1;
+}
+
+.not-a-word[data-display = false] {
+    display: none;
 }

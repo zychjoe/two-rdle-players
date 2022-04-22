@@ -1,6 +1,7 @@
-import React, {useState} from "react"
+import React, {useState, useEffect} from "react"
 import GuessRow from "./GuessRow"
 import OSKeyBoard from "./OSKeyBoard"
+import Modal from "./Modal"
 import './Play.css'
 import { onPlayEnter } from './helpers'
 
@@ -55,6 +56,13 @@ function Play(props){
                                       "canChange" : true,
                                       "index" : 4})
 
+    const [showNotWord, setShowNotWord] = useState(false)
+
+    useEffect (() => {
+        if(showNotWord){
+            setTimeout(() => setShowNotWord(false), 750)
+        }
+    })
     //We'll use this array to find rows at specific indices...
     const grid = [row0,
                   row1,
@@ -193,10 +201,11 @@ function Play(props){
             <GuessRow id="row2" letters={row2.letters} />
             <GuessRow id="row3" letters={row3.letters} />
             <GuessRow id="row4" letters={row4.letters} />
+            <Modal className="not-a-word" visible={showNotWord} text="Not in our word list" />
             <OSKeyBoard keyResults={resultTracker()} 
                         currentRow={guessRowFinder()}
                         rowSetters={rowSetters}
-                        onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters)}} />
+                        onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters, (update) => setShowNotWord(update))}} />
         </div>
     )
 }

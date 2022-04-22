@@ -183,7 +183,7 @@ export const checkGuess = (answer, gRow, rowSetters) => {
  * 
  * Return: false
  */
-export const checkEnglish = (gRow, answer, rowSetters) => {
+export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord) => {
     // First, let's turn the array into a string & add it to the API URL
     const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
     const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + guessString
@@ -201,19 +201,18 @@ export const checkEnglish = (gRow, answer, rowSetters) => {
                             checkGuess(answer, gRow, rowSetters)
                         }
                         else{
-                            console.log("Not a word")
-                            return <text className='not-word'>Not in our word list</ text>
+                            setShowNotWord(true)
                         }
                     })
                     .catch(err => console.error(err))
 }
 
-export const onPlayEnter = (gRow, answer, rowSetters) => {
+export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord) => {
 // First, we check if the given GuessRow has five filled letters && if
 //  the word is a valid English word.
 //  If not, we should just return unchanged.
     if (isFilled(gRow.letters)){
-        checkEnglish(gRow, answer, rowSetters)
+        checkEnglish(gRow, answer, rowSetters, setShowNotWord)
     }
     else{
         console.log("incomplete guess")
