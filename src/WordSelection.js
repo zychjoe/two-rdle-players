@@ -31,8 +31,14 @@ const WordSelection = (props) => {
 
     return (
         <div className="word-select">
+            <div className="instructions">
+                <div><h1>Player One:</h1></div>
+                <div><p>Please enter a five letter word.</p></div>
+            </div>
             <GuessRow id="answer" letters={answerRowBuilder(props.answer).letters} />
-            
+            <div className="instructions">
+                <div><p>Press 'ENTER' to lock it in!</p></div>
+            </div>
             <OSKeyBoard keyResults={[{"letter": "", "result" : ""}, {"letter": "", "result" : ""}]}
                                     currentRow={answerRowBuilder(props.answer)}
                                     rowSetters={answerSetters}
