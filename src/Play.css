@@ -1,4 +1,5 @@
 .guessing-screen{
-    display: flex;
+    display: relative;
     flex-flow: column wrap;
 }
+

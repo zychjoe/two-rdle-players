@@ -63,6 +63,7 @@ function Play(props){
             setTimeout(() => setShowNotWord(false), 750)
         }
     })
+
     //We'll use this array to find rows at specific indices...
     const grid = [row0,
                   row1,

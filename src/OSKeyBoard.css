@@ -1,11 +1,14 @@
 .oskb{
     display: flex;
+    position: fixed;
     flex-flow: row wrap;
     justify-content: center;
     justify-self: center;
     align-items: center;
     height:200px;
     width:420px;
+    left: calc(50vw - 210px);
+    bottom: 0px;
     color:#FFF;
     margin: 0 auto;
     margin-top: 40px;
