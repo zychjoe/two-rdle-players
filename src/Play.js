@@ -87,10 +87,10 @@ function Play(props){
     //const [p2Won, setP2Won] = useState(false)
 
    /*
-    * resultracker: () ---> [letter object]
+    * resultTracker: () ---> [letter object]
     * This function will take stock of the guessed letters and their results.
     * It will return an array of letter objects, one (1) object for each
-    * leter guessed so far, with its most successful result. We will
+    * letter guessed so far, with its most successful result. We will
     * use this array to give feedback to the user through the coloring of
     * OSKeys. 
     * 
@@ -197,6 +197,10 @@ function Play(props){
     ***************************************************************************/
     return(
         <div className="guessing-screen">
+             <div className="instructions">
+                <div><h1>Player Two:</h1></div>
+                <div><p>Start Guessing!</p></div>
+            </div>
             <GuessRow id="row0" letters={row0.letters} />
             <GuessRow id="row1" letters={row1.letters} />
             <GuessRow id="row2" letters={row2.letters} />
