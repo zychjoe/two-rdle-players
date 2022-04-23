@@ -1,5 +1,5 @@
 {
-    "answer" : ["G", "A", "M", "E", "R"],
+    "answer" : ["", "", "", "", ""],
     "lettersToCheck" : [{"value": "B", "result": ""},
                         {"value": "O", "result": ""},
                         {"value": "N", "result": ""},
