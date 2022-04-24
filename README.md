@@ -2,7 +2,7 @@
 
 This project is a clone (i.e. flagrant rip-off) of the beautiful Wordle game created by Josh Wardle, playable here: https://www.nytimes.com/games/wordle/index.html
 
-This game, however, is different in that it allows two players (on the same device) to play together. The first player chooses a five leter word, and the second player tries to guess it in five (5) tries or less.
+This game, however, is different in that it allows two players (on the same device) to play together. The first player chooses a five letter word, and the second player tries to guess it in five (5) tries or less.
 
 ## This is a react app
 
