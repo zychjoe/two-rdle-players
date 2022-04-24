@@ -29,11 +29,11 @@
 
 @media only screen and (max-width: 430px) {
     .title{
-        padding-bottom: 5vh;
+        padding-bottom: 0;
     }
     
     #player-heading{
-        padding:0%;
+        padding-bottom: 0px;
         margin: 0%;
         font-size: large;
         font-weight: bold;
