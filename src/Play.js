@@ -4,7 +4,7 @@ import OSKeyBoard from "./OSKeyBoard"
 import Modal from "./Modal"
 import './Play.css'
 import { onPlayEnter } from './helpers'
-import Player1Congrats from "./Player1Congrats"
+import PlayerCongrats from "./PlayerCongrats"
 
 function Play(props){
    /****************************************************************************
@@ -191,7 +191,7 @@ function Play(props){
         setP1Won(true);
     }
 
-    const instructionsDisplayer =() => {
+    const topDisplayer =() => {
         if (p1Won || p2Won){
             return (
                 <div className="game-over">
@@ -211,7 +211,11 @@ function Play(props){
 
     const bottomDisplayer = () => {
         if (p1Won){
-            return <Player1Congrats answer={props.answer} />
+            return <PlayerCongrats answer={props.answer} pNum="1" />
+        }
+
+        else if (p2Won){
+            return <PlayerCongrats answer={props.answer} pNum="2"/>
         }
         else{
             return <OSKeyBoard keyResults={resultTracker()} 
@@ -228,7 +232,7 @@ function Play(props){
     ***************************************************************************/
     return(
         <div className="guessing-screen">
-             {instructionsDisplayer()}
+             {topDisplayer()}
             <GuessRow id="row0" letters={row0.letters} />
             <GuessRow id="row1" letters={row1.letters} />
             <GuessRow id="row2" letters={row2.letters} />

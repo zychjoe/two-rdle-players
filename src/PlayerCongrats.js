@@ -1,6 +1,6 @@
 import React from "react"
 import GuessRow from './GuessRow'
-import './Player1Congrats.css'
+import './PlayerCongrats.css'
 
 
 const answerRowBuilder = (answer) => {
@@ -16,14 +16,14 @@ const answerRowBuilder = (answer) => {
             "index" : 0}
 }
 
-const Player1Congrats = (props) => {
+const PlayerCongrats = (props) => {
     return (
         <div className="congrats" id="p1-congrats">
-            <h1>Player 1 wins!</h1>
+            <h1>Player {props.pNum} wins!</h1>
             <p>The word was:</p>
             <GuessRow letters={answerRowBuilder(props.answer).letters} />
         </div>
     )
 }
 
-export default Player1Congrats
+export default PlayerCongrats
