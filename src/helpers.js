@@ -137,7 +137,7 @@ export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
 }
 
 /*
- * isEnglish : [letter objects] -> boolean
+ * checkEnglishGuess : [letter objects] -> boolean
  * This function will take an array of letter objects, convert their values
  * into a string and check that string against an English dictionary API.
  * If the word is an English word, it will return 'true', if not, 'false'.
@@ -165,7 +165,7 @@ export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
  * 
  * Return: false
  */
-export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
+export const checkEnglishGuess = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
     // First, let's turn the array into a string & add it to the API URL
     const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
     const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + guessString
@@ -189,12 +189,35 @@ export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord, setP2Won)
                     .catch(err => console.error(err))
 }
 
+export const checkEnglishAnswer = (answer, setGameStage, setAnswerNotWord) => {
+    const answerString = answer.reduce(((prev, curr) => prev + curr), "")
+    const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + answerString
+
+    const options = {
+        method: 'GET'
+    }
+
+    fetch(apiUrl, options)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        if (data[0]){
+
+                            setGameStage("play")
+                        }
+                        else{
+                            setAnswerNotWord(true)
+                        }
+                    })
+                    .catch(err => console.error(err))
+}
+
 export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
 // First, we check if the given GuessRow has five filled letters && if
 //  the word is a valid English word.
 //  If not, we should just return unchanged.
     if (isFilled(gRow.letters)){
-        checkEnglish(gRow, answer, rowSetters, setShowNotWord, setP2Won)
+        checkEnglishGuess(gRow, answer, rowSetters, setShowNotWord, setP2Won)
     }
     else{
         console.log("incomplete guess")

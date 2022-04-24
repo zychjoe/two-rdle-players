@@ -3,11 +3,12 @@
   flex-flow: column wrap;
   background-color: #000;
   height: 100vh;
+  width: 100vw;
 }
 
 .instructions, .congrats, .game-over{
   display: relative;
-  padding: 25px;
+  padding: 1vh 0 2vh 0;
   align-self: center;
   align-content: center;
   text-align: center;

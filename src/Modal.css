@@ -1,8 +1,8 @@
 .not-a-word{
     position: fixed;
     display: inline-block;
-    top: 10%;
-    left: 43%;
+    top: 23vh;
+    left: calc(50vw - 100px);
     color: #FFF;
     align-items: center;
     text-align: center;

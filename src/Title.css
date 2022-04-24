@@ -26,3 +26,29 @@
     width: 40px;
     font-size: 15px;
 }
+
+@media only screen and (max-width: 430px) {
+    .title{
+        padding-bottom: 5vh;
+    }
+    
+    #player-heading{
+        padding:0%;
+        margin: 0%;
+        font-size: large;
+        font-weight: bold;
+        letter-spacing: 2px;
+    }
+    
+    #twordle-heading{
+        display:flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+    
+    #twordle-heading .g-letter{
+        height: 10vw;
+        width: 10vw;
+        font-size: small;
+    }
+}

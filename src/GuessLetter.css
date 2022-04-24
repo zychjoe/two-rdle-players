@@ -7,6 +7,8 @@
     align-items: center;
     width: 62px;
     height: 62px;
+    max-width: 7vh;
+    max-height: 7vh;
     color: #FFF;
     border: 2px solid #272729;
     margin: 2px;
@@ -26,4 +28,14 @@
 .g-letter[data-result = "perfect"] {
     background-color: #538d4e;
     border-color: #538d4e;
+}
+
+@media only screen and (max-width: 600px) {
+    .g-letter {
+        font-size: medium;
+        width: 7vh;
+        height: 7vh;
+    
+    }
+
 }

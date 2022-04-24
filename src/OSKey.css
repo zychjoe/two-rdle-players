@@ -31,3 +31,22 @@ button[data-type="action"]{
     font-size: 15px;
     width: 60px;
 }
+
+
+@media only screen and (max-width: 430px) {
+    .osk{
+        margin: .4vh .6vw;
+        height: 6vh;
+        font-size: medium;
+        border-radius: 4%;
+    }
+    
+    button[data-type="letter"]{
+        width: 7.4vw;
+    }
+
+    button[data-type="action"]{
+        font-size: x-small;
+        width: 12vw;
+    }
+}
