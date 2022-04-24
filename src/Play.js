@@ -4,6 +4,7 @@ import OSKeyBoard from "./OSKeyBoard"
 import Modal from "./Modal"
 import './Play.css'
 import { onPlayEnter } from './helpers'
+import Player1Congrats from "./Player1Congrats"
 
 function Play(props){
    /****************************************************************************
@@ -83,8 +84,8 @@ function Play(props){
     // play screen untouched, and just change out the OSKB for a congrats
     // message to the winning player.
     //TODO: Make winning screens
-    //const [p1Won, setP1Won] = useState(false)
-    //const [p2Won, setP2Won] = useState(false)
+    const [p1Won, setP1Won] = useState(false)
+    const [p2Won, setP2Won] = useState(false)
 
    /*
     * resultTracker: () ---> [letter object]
@@ -185,10 +186,40 @@ function Play(props){
 
                 return row
             }
-            //setP1Won(true);
+        }
+
+        setP1Won(true);
+    }
+
+    const instructionsDisplayer =() => {
+        if (p1Won || p2Won){
+            return (
+                <div className="game-over">
+                  <h1>GAME OVER</h1>
+                </div>
+            )
+        }
+        else{
+            return (
+                <div className="instructions">
+                    <div><h1>Player Two:</h1></div>
+                    <div><p>Start Guessing!</p></div>
+                </div>
+            )
         }
     }
 
+    const bottomDisplayer = () => {
+        if (p1Won){
+            return <Player1Congrats answer={props.answer} />
+        }
+        else{
+            return <OSKeyBoard keyResults={resultTracker()} 
+            currentRow={guessRowFinder()}
+            rowSetters={rowSetters}
+            onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters, (update) => setShowNotWord(update))}} />
+        }
+    }
 
 
 
@@ -197,20 +228,14 @@ function Play(props){
     ***************************************************************************/
     return(
         <div className="guessing-screen">
-             <div className="instructions">
-                <div><h1>Player Two:</h1></div>
-                <div><p>Start Guessing!</p></div>
-            </div>
+             {instructionsDisplayer()}
             <GuessRow id="row0" letters={row0.letters} />
             <GuessRow id="row1" letters={row1.letters} />
             <GuessRow id="row2" letters={row2.letters} />
             <GuessRow id="row3" letters={row3.letters} />
             <GuessRow id="row4" letters={row4.letters} />
             <Modal className="not-a-word" visible={showNotWord} text="Not in our word list" />
-            <OSKeyBoard keyResults={resultTracker()} 
-                        currentRow={guessRowFinder()}
-                        rowSetters={rowSetters}
-                        onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters, (update) => setShowNotWord(update))}} />
+            {bottomDisplayer()}
         </div>
     )
 }

@@ -5,7 +5,7 @@
   height: 100vh;
 }
 
-.instructions{
+.instructions, .congrats, .game-over{
   display: relative;
   padding: 25px;
   align-self: center;
