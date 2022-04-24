@@ -3,27 +3,6 @@ import Player1Intro from './Player1Intro'
 import Play from './Play'
 import Modal from './Modal'
 
-/*
- * screenDisplayer: state variables ---> <div>
- * This is the router of the app. Simple switch on the 'gameDisplay' state to
- * update the user's screen for each game stage.
- * 
- * The function always returns a <div>; whatever appropriate js component.
- */
-export const screenDisplayer = (gameDisplay, setPlayerNames, setGameDisplay, answer) => {
-    switch (gameDisplay){
-        case "player1Intro":
-            return <Player1Intro setNames={(update) => setPlayerNames(update)}
-                                 setDisplay={setGameDisplay} />
-        case "wordSelection":
-        case "player2Intro":
-        case "play":
-            return <Play answer={answer}/>
-        default:
-            throw new Error("screenDisplayer: Not a valid gameDisplay!")
-    }
-    }
-
 
 
 
@@ -36,7 +15,7 @@ export const isFilled = (letters) => {
 }
 
 
-export const checkGreens = (guess, answerTracker) => {
+export const checkGreens = (guess, answerTracker, setP2Won) => {
     let winningSoFar = true
     for(let i = 0; i < 5; i++){
         if(guess[i].value === answerTracker[i].value){
@@ -46,6 +25,10 @@ export const checkGreens = (guess, answerTracker) => {
         else{
             winningSoFar = false;
         }
+    }
+    if (winningSoFar){
+        setP2Won(winningSoFar)
+
     }
     return [guess, answerTracker, winningSoFar]
 }
@@ -115,7 +98,7 @@ export const checkYellows = (answerGreened, guessGreened) =>{
 *               [B]    [O]    [O]    [S]    [T]
 *             perfect  miss perfect  miss  miss
 */
-export const checkGuess = (answer, gRow, rowSetters) => {
+export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
     var answerTracker = [{"value" : answer[0], "unmatched" : true},
                         {"value" : answer[1], "unmatched" : true},
                         {"value" : answer[2], "unmatched" : true},
@@ -124,8 +107,7 @@ export const checkGuess = (answer, gRow, rowSetters) => {
                         
     //Now, let's see how many GuessLetters are in the right place.
     // If all five are perfect, we'll use 'winningSoFar' to end the game.
-    let [guessGreened, answerGreened, p2Wins] = checkGreens(gRow.letters, answerTracker)
-
+    let [guessGreened, answerGreened, p2Wins] = checkGreens(gRow.letters, answerTracker, setP2Won)
     
     if(!p2Wins){
         //Since we're still here, we know the answer was not completely correct.
@@ -183,7 +165,7 @@ export const checkGuess = (answer, gRow, rowSetters) => {
  * 
  * Return: false
  */
-export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord) => {
+export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
     // First, let's turn the array into a string & add it to the API URL
     const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
     const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + guessString
@@ -198,7 +180,7 @@ export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord) => {
                         console.log(data)
                         if (data[0]){
 
-                            checkGuess(answer, gRow, rowSetters)
+                            checkGuess(answer, gRow, rowSetters, setP2Won)
                         }
                         else{
                             setShowNotWord(true)
@@ -207,12 +189,12 @@ export const checkEnglish = (gRow, answer, rowSetters, setShowNotWord) => {
                     .catch(err => console.error(err))
 }
 
-export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord) => {
+export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
 // First, we check if the given GuessRow has five filled letters && if
 //  the word is a valid English word.
 //  If not, we should just return unchanged.
     if (isFilled(gRow.letters)){
-        checkEnglish(gRow, answer, rowSetters, setShowNotWord)
+        checkEnglish(gRow, answer, rowSetters, setShowNotWord, setP2Won)
     }
     else{
         console.log("incomplete guess")

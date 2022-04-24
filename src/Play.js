@@ -221,7 +221,11 @@ function Play(props){
             return <OSKeyBoard keyResults={resultTracker()} 
             currentRow={guessRowFinder()}
             rowSetters={rowSetters}
-            onEnter={() => {onPlayEnter(guessRowFinder(), props.answer, rowSetters, (update) => setShowNotWord(update))}} />
+            onEnter={() => {onPlayEnter(guessRowFinder(),
+                            props.answer,
+                            rowSetters, 
+                            (update) => setShowNotWord(update),
+                            (update) => setP2Won(update))}} />
         }
     }
 
