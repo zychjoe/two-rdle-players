@@ -23,8 +23,11 @@ const App = () => {
                                                   "player2" : ""})
 
 
+  /****************************************************************************
+   * Displayer Function
+   ***************************************************************************/
   /*
-   * screenDisplayer: state variables ---> <div>
+   * screenDisplayer: () ---> <div>
    * This is the router of the app. Simple switch on the 'gameDisplay' state to
    * update the user's screen for each game stage.
    * 
@@ -32,12 +35,13 @@ const App = () => {
    */
    const screenDisplayer = () => {
       switch (gameDisplay){
-        case "player1Intro":
+        //TODO: Add player games
+        //case "player1Intro":
         case "wordSelection":
           return <WordSelection answer={answer}
                                 setAnswer={(update) => setAnswer(update)}
                                 setGameDisplay={(update) => setGameDisplay(update)} />
-        case "player2Intro":
+        //case "player2Intro":
         case "play":
             return <Play answer={answer}/>
         default:

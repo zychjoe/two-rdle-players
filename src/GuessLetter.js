@@ -7,11 +7,11 @@ import './GuessLetter.css'
  * and a result (string).
  * 
  * The 'value' property can be either the empty string or a single capital
- * letter. The value is empty by default or after being deleted from the on-
- * screen keyboard (OSK). It will have a letter only after being input by the
- * OSK.
+ * letter. The value is empty by default or after being deleted by the on-
+ * screen keyboard (OSKB). It will have a letter only after being input by the
+ * OSKB.
  * 
- * The 'result' value is the empty string by default.bIf the letter guessed
+ * The 'result' value is the empty string by default. If the letter guessed
  * exists in the answer but in a different position the 'result' will be
  * "close". If the letter is correctly positioned, the 'result' will be
  * "perfect". If the letter is not in the answer at all, 'result' is "miss".

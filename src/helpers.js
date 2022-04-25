@@ -8,13 +8,30 @@ import Modal from './Modal'
 
 /*
  * isFilled: [letter objects] -> booleans
- * Returns true if all letters in the array have non=empty values.
+ * Returns true if all letters in the array have non-empty values.
  */
 export const isFilled = (letters) => {
     return letters.reduce((prev, letter) => prev && letter.value !== "", true)
 }
 
 
+/*
+ * checkGreens: [letter objects], [letter objects], function -> 
+                                [ [letter objects],
+                                [{"letter": capital letter, "unmatched": boolean}],
+                                 boolean ]
+ * This will compare each element of the first array against the element in the
+ * second given array with a matching index. If their values match, we know
+ * that guess letter is in the correct position and we will need to display it
+ * as green to the user.
+ * 
+ * If all elements match, that means the guess is the correct answer and
+ * 'winningsofar' will be set to true. We'll update the player two winning
+ * boolean with the given setter function and end the game.
+ * 
+ * Otherwise we'll return an array containing two arrays with he results of the
+ * check and a 'false' for use in CheckGuess().
+ */
 export const checkGreens = (guess, answerTracker, setP2Won) => {
     let winningSoFar = true
     for(let i = 0; i < 5; i++){
