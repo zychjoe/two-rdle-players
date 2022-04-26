@@ -135,13 +135,13 @@ function Play(props){
         }
         else{
             return <OSKeyBoard keyResults={resultTracker(grid)} 
-            currentRow={guessRowFinder(grid, (update) => setP1Won(update))}
-            rowSetters={rowSetters}
-            onEnter={() => {onPlayEnter(guessRowFinder(grid, (update) => setP1Won(update)),
-                                        props.answer,
-                                        rowSetters, 
-                                        (update) => setShowNotWord(update),
-                                        (update) => setP2Won(update))}} />
+                               currentRow={guessRowFinder(grid, (update) => setP1Won(update))}
+                               rowSetters={rowSetters}
+                               onEnter={() => {onPlayEnter(guessRowFinder(grid, (update) => setP1Won(update)),
+                                                           props.answer,
+                                                           rowSetters, 
+                                                           (update) => setShowNotWord(update),
+                                                           (update) => setP2Won(update))}} />
         }
     }
 

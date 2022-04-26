@@ -29,7 +29,8 @@ function OSKeyBoard(props){
     return(
         <div className="oskb">
             <div className="top-row">
-                {oskbRow0.map(val => <OSKey name={val}
+                {oskbRow0.map(val => <OSKey key={val}
+                                            name={val}
                                             type="letter"
                                             onClick={() => nextLetterFiller(val,
                                                                             props.currentRow,
@@ -38,7 +39,8 @@ function OSKeyBoard(props){
                                                                      props.keyResults)} />)}
             </div>
             <div className="middle-row">
-            {oskbRow1.map(val => <OSKey name={val}
+                {oskbRow1.map(val => <OSKey key={val}
+                                            name={val}
                                             type="letter"
                                             onClick={() => nextLetterFiller(val,
                                                                             props.currentRow,
@@ -47,18 +49,21 @@ function OSKeyBoard(props){
                                                                      props.keyResults)} />)}
             </div>
             <div className="final-row">
-                <OSKey name="ENTER" 
+                <OSKey key="ENTER"
+                       name="ENTER"
                        type="action"
                        onClick={props.onEnter}
                        result="" />
-                {oskbRow2.map(val => <OSKey name={val}
+                {oskbRow2.map(val => <OSKey key={val}
+                                            name={val}
                                             type="letter"
                                             onClick={() => nextLetterFiller(val,
                                                                             props.currentRow,
                                                                             props.rowSetters)}
                                             result={keyResultUpdater(val,
                                                                      props.keyResults)} />)}
-                <OSKey name="DEL"
+                <OSKey key="DEL"
+                       name="DEL"
                        type="action"
                        onClick={() => lastLetterRemover(props.currentRow,
                                                         props.rowSetters)}

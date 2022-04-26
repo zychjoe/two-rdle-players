@@ -48,9 +48,9 @@ const WordSelection = (props) => {
             </div>
             <OSKeyBoard keyResults={[{"letter": "", "result" : ""}, 
                                      {"letter": "", "result" : ""}]}
-                                    currentRow={answerRowBuilder(props.answer)}
-                                    rowSetters={answerSetters}
-                                    onEnter={() => onSelectEnter()} />
+                        currentRow={answerRowBuilder(props.answer)}
+                        rowSetters={answerSetters}
+                        onEnter={() => onSelectEnter()} />
         </div>
     )
 }
