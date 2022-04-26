@@ -16,10 +16,12 @@ export const isFilled = (letters) => {
 
 
 /*
- * checkGreens: [letter objects], [letter objects], function -> 
-                                [ [letter objects],
-                                [{"letter": capital letter, "unmatched": boolean}],
-                                 boolean ]
+ * checkGreens: [letter objects],
+                [{"letter": capital letter, "matched": boolean}],
+                state setter 
+                    -> [ [letter objects],
+                         [{"value": capital letter, "matched": boolean}],
+                         boolean ]
  * This will compare each element of the first array against the element in the
  * second given array with a matching index. If their values match, we know
  * that guess letter is in the correct position and we will need to display it
@@ -27,17 +29,51 @@ export const isFilled = (letters) => {
  * 
  * If all elements match, that means the guess is the correct answer and
  * 'winningsofar' will be set to true. We'll update the player two winning
- * boolean with the given setter function and end the game.
+ * boolean with the given setter function.
  * 
- * Otherwise we'll return an array containing two arrays with he results of the
- * check and a 'false' for use in CheckGuess().
+ * We'll then return an array containing two arrays with the results of the
+ * check and 'winningSofar' for use in checkGuess().
+ * 
+ * EXAMPLES:
+ * 
+ * Given:
+ * guess -- [{"B", ""}, | answerTracker -- [{"B", false}, | setP2Won -- 
+ *           {"O", ""}, |                   {"O", false}, | (bool) => setP2Won(bool)
+ *           {"O", ""}, |                   {"N", false}, |
+ *           {"K", ""}, |                   {"U", false}, |
+ *           {"S", ""}] |                   {"S", false}] |
+ * 
+ * Return:
+ * guess -- [{"B", "perfect"}, | answerTracker -- [{"B", true},  | winningSoFar -- 
+ *           {"O", "perfect"}, |                   {"O", true},  |    false
+ *           {"O", ""},        |                   {"N", false}, |
+ *           {"K", ""},        |                   {"U", false}, |
+ *           {"S", "perfect"}] |                   {"S", true}]  |
+ * 
+ * ----------------------------------------------------------------------------
+ * Given:
+ * guess -- [{"B", ""}, | answerTracker -- [{"B", false}, | setP2Won -- 
+ *           {"O", ""}, |                   {"O", false}, | (bool) => setP2Won(bool)
+ *           {"O", ""}, |                   {"O", false}, |
+ *           {"K", ""}, |                   {"K", false}, |
+ *           {"S", ""}] |                   {"S", false}] |
+ * 
+ * Return:
+ * guess -- [{"B", "perfect"}, | answerTracker -- [{"B", true},  | winningSoFar -- 
+ *           {"O", "perfect"}, |                   {"O", true},  |    true
+ *           {"O", "perfect"}, |                   {"N", true},  |
+ *           {"K", "perfect"}, |                   {"U", true},  |
+ *           {"S", "perfect"}] |                   {"S", true}]  |
+ * 
+ * 
+ * 
  */
 export const checkGreens = (guess, answerTracker, setP2Won) => {
     let winningSoFar = true
     for(let i = 0; i < 5; i++){
         if(guess[i].value === answerTracker[i].value){
             guess[i].result = "perfect";
-            answerTracker[i].unmatched = false;
+            answerTracker[i].matched = true;
         }
         else{
             winningSoFar = false;
@@ -50,18 +86,77 @@ export const checkGreens = (guess, answerTracker, setP2Won) => {
     return [guess, answerTracker, winningSoFar]
 }
 
-
+/*
+ * checkYellows: [letter objects],
+                 [{"value": capital letter, "matched": boolean}]
+                          -> [letter objects]
+ * This will compare any elements in the first array with an empty 'result'
+ * against all the elements of the second array whose 'matched' field is
+ * false. For each element checked, if the value matches the value of an
+ * element with a false "matched" field, we'll set that element's result
+ * to "close" and the matched element's "matched" to true.
+ * 
+ * We'll then return the updated guess array.
+ * 
+ * EXAMPLES:
+ * 
+ * Given:
+ * guess -- [{"B", "perfect"}, | answerTracker -- [{"B", true}, 
+ *           {"O", "perfect"}, |                   {"O", true},
+ *           {"O", ""},        |                   {"N", false}
+ *           {"K", ""},        |                   {"U", false}
+ *           {"S", "perfect"}] |                   {"S", true}]
+ * 
+ * Return:
+ * guess -- [{"B", "perfect"},
+ *           {"O", "perfect"},
+ *           {"O", ""},
+ *           {"K", ""},
+ *           {"S", "perfect"}]
+ * 
+ * ----------------------------------------------------------------------------
+ * Given:
+ * guess -- [{"B", "perfect"}, | answerTracker -- [{"B", true}, 
+ *           {"U", ""},        |                   {"O", false},
+ *           {"N", "perfect"}, |                   {"N", true},
+ *           {"N", ""},        |                   {"U", false},
+ *           {"Y", ""}]        |                   {"S", false}]
+ * 
+ * Return:
+ * guess -- [{"B", "perfect"},
+ *           {"U", "close"},
+ *           {"N", "perfect"},
+ *           {"N", ""},
+ *           {"Y", ""}]
+ * ----------------------------------------------------------------------------
+ * Given:
+ * guess -- [{"E", ""},        | answerTracker -- [{"S", false}, 
+ *           {"X", ""},        |                   {"A", false},
+ *           {"A", ""},        |                   {"X", false},
+ *           {"M", ""},        |                   {"E", false},
+ *           {"S", "perfect"}] |                   {"S", true}]
+ * 
+ * Return:
+ * guess -- [{"E", "close"},
+ *           {"X", "close"},
+ *           {"A", "close"},
+ *           {"M", ""},
+ *           {"S", "perfect"}]
+ * 
+ * 
+ * 
+ */
 export const checkYellows = (answerGreened, guessGreened) =>{
     for(let aLetter of answerGreened){
         for(let gLetter of guessGreened){
-            if(!aLetter.unmatched){
+            if(!aLetter.matched){
                 break
             }
             if(gLetter.result !== "close"
                && gLetter.result !== "perfect"
                && gLetter.value == aLetter.value){
                     gLetter.result = "close";
-                    aLetter.unmatched = false;
+                    aLetter.matched = false;
                     break;
             }
         }
@@ -71,7 +166,7 @@ export const checkYellows = (answerGreened, guessGreened) =>{
 }
 
 /*
-* checkGuess: (GuessRow) ---> void
+* checkGuess: [capital letter], GuessRow, [state setters], state setter ---> void
 * This function will be called on the click of the 'ENTER' OSKey.
 * 
 * We want to check the given GuessRow against the answer.
@@ -91,24 +186,24 @@ export const checkYellows = (answerGreened, guessGreened) =>{
 * 
 * EXAMPLES:
 * 
-* Answer -> [M][O][V][I][E]
-* Guess  -> [S][T][O][V][E]
+* Given answer values: [M][O][V][I][E]
+* Given guess values:  [S][T][O][V][E]
 * 
 * Result-->
 * 
 *               [S]    [T]    [O]    [V]    [E]
 *              miss    miss  close  close  perfect
 * -------------------------------------------------------
-* Answer -> [B][E][E][R][S]
-* Guess  -> [E][E][R][I][E]
+* Given answer values: [B][E][E][R][S]
+* Given guess values:  [E][E][R][I][E]
 * 
 * Result-->
 * 
 *               [E]    [E]    [R]    [I]    [E]
 *             close  perfect close   miss   miss
 * -------------------------------------------------------
-* Answer -> [B][L][O][K][E]
-* Guess  -> [B][O][O][S][T]
+* Given answer values: [B][L][O][K][E]
+* Given guess values:  [B][O][O][S][T]
 * 
 * Result-->
 * 
@@ -116,11 +211,11 @@ export const checkYellows = (answerGreened, guessGreened) =>{
 *             perfect  miss perfect  miss  miss
 */
 export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
-    var answerTracker = [{"value" : answer[0], "unmatched" : true},
-                        {"value" : answer[1], "unmatched" : true},
-                        {"value" : answer[2], "unmatched" : true},
-                        {"value" : answer[3], "unmatched" : true},
-                        {"value" : answer[4], "unmatched" : true}]
+    var answerTracker = [{"value" : answer[0], "matched" : false},
+                         {"value" : answer[1], "matched" : false},
+                         {"value" : answer[2], "matched" : false},
+                         {"value" : answer[3], "matched" : false},
+                         {"value" : answer[4], "matched" : false}]
                         
     //Now, let's see how many GuessLetters are in the right place.
     // If all five are perfect, we'll use 'winningSoFar' to end the game.
