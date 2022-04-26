@@ -1,27 +1,22 @@
-import React from 'react'
-import Player1Intro from './Player1Intro'
-import Play from './Play'
-import Modal from './Modal'
-
-
-
-
-/*
- * isFilled: [letter objects] -> booleans
- * Returns true if all letters in the array have non-empty values.
- */
-export const isFilled = (letters) => {
-    return letters.reduce((prev, letter) => prev && letter.value !== "", true)
+/******************************************************************************
+ * API VARIABLES
+ *****************************************************************************/
+const baseAPI = 'https://api.dictionaryapi.dev/api/v2/entries/en/'
+const options = {
+    method: 'GET'
 }
 
 
+/******************************************************************************
+ * PLAY.JS HELPERS
+ *****************************************************************************/
 /*
- * checkGreens: [letter objects],
-                [{"letter": capital letter, "matched": boolean}],
-                state setter 
-                    -> [ [letter objects],
-                         [{"value": capital letter, "matched": boolean}],
-                         boolean ]
+ * checkGreens: [letter object],
+ *              [{"letter": capital letter, "matched": boolean}],
+ *              state setter 
+ *                  -> [ [letter object],
+ *                       [{"value": capital letter, "matched": boolean}],
+ *                       boolean ]
  * This will compare each element of the first array against the element in the
  * second given array with a matching index. If their values match, we know
  * that guess letter is in the correct position and we will need to display it
@@ -87,9 +82,9 @@ export const checkGreens = (guess, answerTracker, setP2Won) => {
 }
 
 /*
- * checkYellows: [letter objects],
-                 [{"value": capital letter, "matched": boolean}]
-                          -> [letter objects]
+ * checkYellows: [letter object],
+ *               [{"value": capital letter, "matched": boolean}]
+ *                        -> [letter object]
  * This will compare any elements in the first array with an empty 'result'
  * against all the elements of the second array whose 'matched' field is
  * false. For each element checked, if the value matches the value of an
@@ -166,22 +161,16 @@ export const checkYellows = (answerGreened, guessGreened) =>{
 }
 
 /*
-* checkGuess: [capital letter], GuessRow, [state setters], state setter ---> void
+* checkGuess: [capital letter], GuessRow, [state setter], state setter ---> void
 * This function will be called on the click of the 'ENTER' OSKey.
 * 
 * We want to check the given GuessRow against the answer.
 * 
-* First, we want to find all GuessLetters in the correct position and
-* set their 'result' to "perfect".
-* 
-* If all five GuessLetters are in the right place, we want to set
-* p2Won to true and end the game.
-* 
-* If the guess is not completely correct, we want to find any
-* letters that are in the answer but haven't been put in the
-* correct position and set their 'result' to "close".
+* We'll use checkGreens and checkYellows to find matches.
 * 
 * Any remaining letters should have their 'result' set to "miss"
+*
+* Once we have done the check, we'll update all states and re-render.
 *
 * 
 * EXAMPLES:
@@ -217,17 +206,14 @@ export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
                          {"value" : answer[3], "matched" : false},
                          {"value" : answer[4], "matched" : false}]
                         
-    //Now, let's see how many GuessLetters are in the right place.
-    // If all five are perfect, we'll use 'winningSoFar' to end the game.
+    //First, let's see how many GuessLetters are in the right place.
     let [guessGreened, answerGreened, p2Wins] = checkGreens(gRow.letters, answerTracker, setP2Won)
     
     if(!p2Wins){
-        //Since we're still here, we know the answer was not completely correct.
-        // We need to check any remaining GuessLetters against any remaining
-        // lettters in the answer, while minding duplicates.
+        //In this case, not every letter was correct so we'll look for yellows-
         let guessYellowed = checkYellows(answerGreened, guessGreened)
 
-        //Finally, we need to record our guessed letters absent from the answer.
+        //-and we need to record our guessed letters absent from the answer.
         let guessChecked = guessYellowed.map((letter) => {
                                             if(letter.result === ""){
                                                 letter.result = "miss"
@@ -241,7 +227,7 @@ export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
                                 "index" : gRow.index})
     }
     else {
-        //And we'll update the state and re-render.
+        //The guess was completely correct, so let's re-render for P2's victory.
         rowSetters[gRow.index]({"letters": guessGreened,
                                 "canChange" :false,
                                 "index" : gRow.index})
@@ -249,42 +235,26 @@ export const checkGuess = (answer, gRow, rowSetters, setP2Won) => {
 }
 
 /*
- * checkEnglishGuess : [letter objects] -> boolean
- * This function will take an array of letter objects, convert their values
- * into a string and check that string against an English dictionary API.
- * If the word is an English word, it will return 'true', if not, 'false'.
+ * checkEnglishGuess : GuessRow,
+ *                     [capital letter],
+ *                     [state setter],
+ *                     state setter,
+ *                     state setter
+ *                          -> void
+ * 
+ * This function will use an API check to assess if the given guess is English.
+ * If so, it will check the guess for accuracy. If not, it will trigger a modal
+ * explaining that the word is not in the 'word list', i.e. it isn't recognized
+ * by our dictionary API.
  * 
  * NOTE: This function is called AFTER a check to make sure each letter
  * object has a value. There will never be a call with an incomplete
- * guess.
- * 
- * EXAMPLES:
- * 
- * Given: [{"value": "B", "result": ""},
- *         {"value": "O", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "U", "result": ""},
- *         {"value": "S", "result": ""}]
- * 
- * Return: true
- * ----------------------------------------------------------------------
- * 
- * Given: [{"value": "B", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "N", "result": ""},
- *         {"value": "S", "result": ""}]
- * 
- * Return: false
+ * answer.
  */
 export const checkEnglishGuess = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
     // First, let's turn the array into a string & add it to the API URL
     const guessString = gRow.letters.reduce(((prev, curr) => prev + curr.value), "")
-    const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + guessString
-
-    const options = {
-        method: 'GET'
-    }
+    const apiUrl =  baseAPI + guessString
 
     fetch(apiUrl, options)
                     .then(response => response.json())
@@ -301,13 +271,148 @@ export const checkEnglishGuess = (gRow, answer, rowSetters, setShowNotWord, setP
                     .catch(err => console.error(err))
 }
 
+/*
+ * isFilled: [letter object] -> boolean
+ * Returns true if all letters in the array have non-empty values.
+ */
+export const isFilled = (letters) => {
+    return letters.reduce((prev, letter) => prev && letter.value !== "", true)
+}
+
+/*
+ * onPlayEnter : GuessRow,
+ *               [capital letter],
+ *               [state setter],
+ *               state setter,
+ *               state setter
+ *                     -> void
+ * 
+ * This function will be called by the OSKey "ENTER" on the Play screen. It
+ * will check that each letter object in the given GuessWord has a filled value.
+ * 
+ * Assuming it does, it will begin the guess checking process by calling checkEnglishGuess.
+ */
+export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
+    if (isFilled(gRow.letters)){
+        checkEnglishGuess(gRow, answer, rowSetters, setShowNotWord, setP2Won)
+    }
+    else{
+        console.log("incomplete guess")
+    }
+}
+/*****************************************************************************
+ * OSKEYBOARD.JS HELPERS
+ *****************************************************************************/
+   /*
+    * keyResultUpdater: capital letter,  [letter object] -> string
+    * This function tells the keys in the keyboard if the OSKey's value has
+    * already been guessed by player2, and if so, what the result of the
+    * guess was. We will use this information to color the OSKeys for 
+    * Player 2.
+    * 
+    * The given string should only ever be in the form of a single uppercase
+    * letter.
+    * 
+    * The function returns a 'result' in the form of a string.
+    *   "perfect": the letter has been found in the answer at least one correct
+    *               position
+    *   "close": the letter has been found in the answer at least once but
+    *               the correct position is still unknown
+    *   "miss": the letter does not appear in the answer
+    *   "": the letter has not been guessed
+    */
+export const keyResultUpdater = (keyVal, keyResults) => {
+    const resultedLetter = (
+        keyResults.filter(letter => letter.value === keyVal))
+
+    //There should never be more than one object in the results array
+    if(resultedLetter.length > 1){
+        throw new Error("keyResultUpdater: Too many of the same leter in"
+                        +"results array")
+    }
+    return resultedLetter.length === 0 ? "" : resultedLetter[0].result 
+}
+
+/*
+* nextLetterFiller: capital letter, GuessRow, [state setters] -> void
+* This function will be handed to the letter OSKeys for their
+* click-events. It will itrate through the current GuessRow (props.currRow)
+* and find the first letter object assigned a value of the empty string.
+* It will then set that object's value to the given new value (newVal).
+* 
+* The given string should only ever be in the form of a single uppercase
+* letter.
+* 
+* If the GuessRow letters all already have a non-empty string value,
+* nothing happens.
+* 
+* Once the letter object's value is set, we call a setState given by
+* props.rowSetters.
+*/
+export const nextLetterFiller = (newVal, currRow, rowSetters) => {
+    for(let i = 0; i < 5; i++){
+        if(currRow.letters[i].value === ""){
+            currRow.letters[i].value = newVal
+            rowSetters[currRow.index]({"letters": currRow.letters,
+                                            "canChange" : currRow.canChange,
+                                            "index" : currRow.index})
+            break
+        }
+    }
+}
+
+/*
+* lastLetterRemover: GuessRow, [state setters] ---> void
+* The reversal of nexletterFiller, lastLetterRemover will be called by the
+* 'DEL' OSKey. It iterates backwards trhough the current GuessRow and finds
+* the most recent letter to receive a non-empty string value. It then
+* resets the value to the empty string, effectively deleting the letter
+* guessed.
+* 
+* If the GuessRow letters all already have empty string values, nothing
+* happens.
+* 
+* Once the letter object's value is reset to "", we call a setState given
+* by props.rowSetters.
+*/
+export const lastLetterRemover = (currRow, rowSetters) => {
+    for(let i = 4; i >= 0; i--){
+        if(currRow.letters[i].value !== ""){
+            currRow.letters[i].value = ""
+            rowSetters[currRow.index]({"letters": currRow.letters,
+                                            "canChange" : currRow.canChange,
+                                            "index" : currRow.index})
+            break
+        }
+    }
+}
+
+
+
+
+/******************************************************************************
+ * WORDSELECTION.JS HELPERS
+ *****************************************************************************/
+
+
+/*
+ * checkEnglishAnswer : [capital letter],
+ *                      state setter,
+ *                      state setter
+ *                          -> void
+ * 
+ * This function will use an API check to assess if the given answer is English.
+ * If so, it will check the answer for accuracy. If not, it will trigger a modal
+ * explaining that the word is not in the 'word list', i.e. it isn't recognized
+ * by our dictionary API.
+ * 
+ * NOTE: This function is called AFTER a check to make sure each letter
+ * object has a value. There will never be a call with an incomplete
+ * guess.
+ */
 export const checkEnglishAnswer = (answer, setGameStage, setAnswerNotWord) => {
     const answerString = answer.reduce(((prev, curr) => prev + curr), "")
-    const apiUrl = 'https://api.dictionaryapi.dev/api/v2/entries/en/' + answerString
-
-    const options = {
-        method: 'GET'
-    }
+    const apiUrl = baseAPI + answerString
 
     fetch(apiUrl, options)
                     .then(response => response.json())
@@ -322,16 +427,4 @@ export const checkEnglishAnswer = (answer, setGameStage, setAnswerNotWord) => {
                         }
                     })
                     .catch(err => console.error(err))
-}
-
-export const onPlayEnter = (gRow, answer, rowSetters, setShowNotWord, setP2Won) => {
-// First, we check if the given GuessRow has five filled letters && if
-//  the word is a valid English word.
-//  If not, we should just return unchanged.
-    if (isFilled(gRow.letters)){
-        checkEnglishGuess(gRow, answer, rowSetters, setShowNotWord, setP2Won)
-    }
-    else{
-        console.log("incomplete guess")
-    }
 }

@@ -1,41 +1,42 @@
-import './App.css'
+/******************************************************************************
+ * DEPENDENCIES
+ *****************************************************************************/
 import React, {useState} from 'react'
 import Title from './Title.js'
 import WordSelection from './WordSelection'
 import Play from './Play'
-import testvalues from './testvalues.json'
+import './App.css'
 
 
 /*
 * Main App component
 */
 const App = () => {
-  /****************************************************************************
-   * STATE HOOKS
-   ***************************************************************************/
+/******************************************************************************
+ * STATE HOOKS
+ *****************************************************************************/
 
   //'gameDisplay' keeps track of the game stage
   const [gameDisplay, setGameDisplay] = useState("wordSelection")
   //'answer' ultimately holds player1's input answer for player 2 to guess
-  const [answer, setAnswer] = useState(testvalues.answer)
-  //fields to hold the players' names
-  const [playerNames, setPlayerNames] = useState({"player1" : "",
-                                                  "player2" : ""})
+  const [answer, setAnswer] = useState(["", "", "", "", ""])
+  //TODO: fields to hold the players' names
+  //const [playerNames, setPlayerNames] = useState({"player1" : "", "player2" : ""})
 
 
-  /****************************************************************************
-   * Displayer Function
-   ***************************************************************************/
+/******************************************************************************
+ * Displayer Function
+ *****************************************************************************/
   /*
    * screenDisplayer: () ---> <div>
    * This is the router of the app. Simple switch on the 'gameDisplay' state to
    * update the user's screen for each game stage.
    * 
-   * The function always returns a <div>; whatever appropriate js component.
+   * The function always returns the appropriate js component.
    */
    const screenDisplayer = () => {
       switch (gameDisplay){
-        //TODO: Add player games
+        //TODO: Add player names
         //case "player1Intro":
         case "wordSelection":
           return <WordSelection answer={answer}
@@ -48,9 +49,9 @@ const App = () => {
             throw new Error("screenDisplayer: Not a valid gameDisplay!")
       }
     }                                                
-  /****************************************************************************
-   * RENDER
-   ***************************************************************************/
+/******************************************************************************
+ * RENDER
+ *****************************************************************************/
   return (
     <div className="App">
       <Title />
