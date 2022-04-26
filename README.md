@@ -6,9 +6,11 @@ This project is a version of the beautiful Wordle game created by Josh Wardle, p
 
 This game, however, is different in that it allows two players (on the same device) to play together. The first player chooses a five letter word, and the second player tries to guess it in five (5) tries or less.
 
-## This is a React app
+## This is an app written in Javascript with several frameworks.
 
 I utilized the create-react-app structure found here: https://create-react-app.dev/
+
+In addition to React, I also utilized Jest for unit testing. Installation and documentation here: https://jestjs.io/docs/getting-started
 
 ## This is, at this stage, merely the MVP.
 
