@@ -1,18 +1,21 @@
+/******************************************************************************
+ * DEPENDENCIES
+ *****************************************************************************/
 import React, {useState, useEffect} from "react"
 import GuessRow from "./GuessRow"
 import OSKeyBoard from "./OSKeyBoard"
 import Modal from "./Modal"
-import './Play.css'
-import { onPlayEnter } from './helpers'
+import {onPlayEnter, resultTracker, guessRowFinder} from './helpers'
 import PlayerCongrats from "./PlayerCongrats"
+import './Play.css'
 
 function Play(props){
-   /****************************************************************************
-    * STATE HOOKS
-    ***************************************************************************/
+/******************************************************************************
+ * STATE HOOKS
+ *****************************************************************************/
 
    //The next five objects contain 3 key-value pairs:
-   // "letters": an array of leter objects each with a value string and
+   // "letters": an array of letter objects each with a value string and
    //               a result string
    // "canChange": a boolean (default 'true') that urns false after a row has
    //               has been evaluated
@@ -57,14 +60,6 @@ function Play(props){
                                       "canChange" : true,
                                       "index" : 4})
 
-    const [showNotWord, setShowNotWord] = useState(false)
-
-    useEffect (() => {
-        if(showNotWord){
-            setTimeout(() => setShowNotWord(false), 750)
-        }
-    })
-
     //We'll use this array to find rows at specific indices...
     const grid = [row0,
                   row1,
@@ -79,118 +74,32 @@ function Play(props){
                         (update) => setRow3(update),
                         (update) => setRow4(update)]
 
+    //This hook will help us display a modal if a guessed word isn't acceptable
+    const [showNotWord, setShowNotWord] = useState(false)
+
+    //We want to hide the "not in our list" modal shortly after it is displayed
+    useEffect (() => {
+        if(showNotWord){
+            setTimeout(() => setShowNotWord(false), 750)
+        }
+    })
+
     //These will be used to trigger the ending screen. We set these here and
     // not in the main app file becasue we will leave the top half of the
     // play screen untouched, and just change out the OSKB for a congrats
     // message to the winning player.
-    //TODO: Make winning screens
     const [p1Won, setP1Won] = useState(false)
     const [p2Won, setP2Won] = useState(false)
 
+
+/******************************************************************************
+ * COMPONENT DISPLAYERS
+ *****************************************************************************/
    /*
-    * resultTracker: () ---> [letter object]
-    * This function will take stock of the guessed letters and their results.
-    * It will return an array of letter objects, one (1) object for each
-    * letter guessed so far, with its most successful result. We will
-    * use this array to give feedback to the user through the coloring of
-    * OSKeys. 
-    * 
-    * There should only ever be one object for each letter value, so if a
-    * letter has been guessed more than once we only want to track the best
-    * guess:
-    * 
-    *   "perfect" > "close" > "miss"
-    * 
-    * We do not want to record any letters in the current GuessRow that have
-    * been entered but not evaluated. If we see a result of "", we'll skip.
-    * 
-    * TODO: Refactor and clean up!
+    * topDisplayer: () ---> <div>
+    * This is a router. We either want to display instructions or
+    * a "Game Over" message.
     */
-    const resultTracker = () => {
-        let results = []
-        for (let row of grid) {
-            for (let letter of row.letters){
-                //If the letter is already in the results array with this
-                // result, if this letter hasn't been evaluated, we move on.
-                if(results.includes(letter) || letter.result === ""){
-                    continue
-                }
-                //If we know the letter is not yet in the results array, we
-                // can simply push it in and move on.
-                if(results.reduce(((prev, curr) => prev 
-                                  && (curr.value !== letter.value)),
-                                  true)){
-                    results.push(letter)
-                    continue
-                }
-                //If the letter is already in the results array with a "perfect"
-                // that's as good as it can be, so we'll move on.
-                if(results.reduce(((prev, curr) => prev 
-                                   || (curr.value == letter.value
-                                       && curr.result === "perfect")),
-                                  false)){
-                    continue
-                }
-                //Now we know the letter is in the results array with a less
-                // "perfect" result. That means the object in the array must
-                // either be "close" or "miss". So...
-                switch (letter.result){
-                    //If this letter is perfect, we need to override its match
-                    // in the results array.
-                    case "perfect":
-                        let newResults = results.map(rLetter => {
-                            if (rLetter.value === letter.value){
-                                return letter
-                            }
-                            else{
-                                return rLetter
-                            }
-                        })
-                        results = newResults
-                    //And if we're here, we know ours is only "close" so we
-                    // only need to upgrade an existing "miss"
-                    case "close":
-                        let newerResults = results.map(rLetter => {
-                            if (rLetter.value === letter.value && rLetter.result === "miss"){
-                                return letter
-                            }
-                            else{
-                                return rLetter
-                            }
-                        })
-                    
-                    default:
-                        continue
-                }
-
-            }
-
-        }
-        return results
-    }
-
-
-   /*
-    * guessRowFinder: () ---> GuessRow || void
-    * This quick function finds the next GuessRow to not have been evaluated.
-    * 
-    * If it runs through the for-loop and does not find one, that means all
-    * five GuessRows have been evaluated and the answer was not found.
-    * Player 1 wins!
-    * 
-    * TODO: Make a P1Wins screen
-    */
-    const guessRowFinder = () => {
-        for (let row of grid){
-            if(row.canChange){
-
-                return row
-            }
-        }
-
-        setP1Won(true);
-    }
-
     const topDisplayer =() => {
         if (p1Won || p2Won){
             return (
@@ -209,6 +118,13 @@ function Play(props){
         }
     }
 
+   /*
+    * bottomDisplayer: () ---> <div>
+    * This is another router. During the game, we want to display the OSKB.
+    * Once someone wins, we'll display the wionner and the correct answer.
+    */
+    //TODO: Add a replay button
+    //      (or maybe 2, one for a rematch and one to switch players)
     const bottomDisplayer = () => {
         if (p1Won){
             return <PlayerCongrats answer={props.answer} pNum="1" />
@@ -218,22 +134,22 @@ function Play(props){
             return <PlayerCongrats answer={props.answer} pNum="2"/>
         }
         else{
-            return <OSKeyBoard keyResults={resultTracker()} 
-            currentRow={guessRowFinder()}
+            return <OSKeyBoard keyResults={resultTracker(grid)} 
+            currentRow={guessRowFinder(grid, (update) => setP1Won(update))}
             rowSetters={rowSetters}
-            onEnter={() => {onPlayEnter(guessRowFinder(),
-                            props.answer,
-                            rowSetters, 
-                            (update) => setShowNotWord(update),
-                            (update) => setP2Won(update))}} />
+            onEnter={() => {onPlayEnter(guessRowFinder(grid, (update) => setP1Won(update)),
+                                        props.answer,
+                                        rowSetters, 
+                                        (update) => setShowNotWord(update),
+                                        (update) => setP2Won(update))}} />
         }
     }
 
 
 
-   /****************************************************************************
-    * RENDERER
-    ***************************************************************************/
+/******************************************************************************
+ * RENDERER
+ *****************************************************************************/
     return(
         <div className="guessing-screen">
              {topDisplayer()}
@@ -242,7 +158,8 @@ function Play(props){
             <GuessRow id="row2" letters={row2.letters} />
             <GuessRow id="row3" letters={row3.letters} />
             <GuessRow id="row4" letters={row4.letters} />
-            <Modal className="not-a-word" visible={showNotWord} text="Not in our word list" />
+            <Modal className="not-a-word"
+                   visible={showNotWord} text="Not in our word list" />
             {bottomDisplayer()}
         </div>
     )

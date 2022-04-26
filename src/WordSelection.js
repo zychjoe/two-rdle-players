@@ -1,12 +1,17 @@
+/******************************************************************************
+ * DEPENDENCIES
+ *****************************************************************************/
 import React, {useState, useEffect} from "react"
 import OSKeyBoard from "./OSKeyBoard"
 import GuessRow from "./GuessRow"
-import {checkEnglishAnswer} from './helpers'
+import {answerRowBuilder, checkEnglishAnswer} from './helpers'
 import Modal from './Modal'
 import './WordSelection.css'
 
 const WordSelection = (props) => {
-
+/******************************************************************************
+ * STATE HOOKS
+ *****************************************************************************/
     const [answerNotWord, setAnswerNotWord] = useState(false)
 
     useEffect (() => {
@@ -14,19 +19,6 @@ const WordSelection = (props) => {
             setTimeout(() => setAnswerNotWord(false), 750)
         }
     })
-
-    const answerRowBuilder = (answer) => {
-        return {"letters" : answer.map(letterVal => {
-                                if(letterVal == ""){
-                                    return {"value" : letterVal, "result" : ""}
-                                }
-                                else {
-                                    return {"value" : letterVal, "result" : "perfect"}
-                                }
-                            }),
-                "canChange" : true,
-                "index" : 0}
-    }
 
     const answerSetters = [(update) => {
         const newAnswer = update.letters.map(letter => letter.value)
@@ -40,7 +32,9 @@ const WordSelection = (props) => {
                                (update) => setAnswerNotWord(update))
         }
     }
-
+/******************************************************************************
+ * RENDER
+ *****************************************************************************/
     return (
         <div className="word-select">
             <div className="instructions">
@@ -52,7 +46,8 @@ const WordSelection = (props) => {
             <div className="instructions">
                 <div><p>Press 'ENTER' to lock it in!</p></div>
             </div>
-            <OSKeyBoard keyResults={[{"letter": "", "result" : ""}, {"letter": "", "result" : ""}]}
+            <OSKeyBoard keyResults={[{"letter": "", "result" : ""}, 
+                                     {"letter": "", "result" : ""}]}
                                     currentRow={answerRowBuilder(props.answer)}
                                     rowSetters={answerSetters}
                                     onEnter={() => onSelectEnter()} />
