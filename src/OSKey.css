@@ -39,8 +39,6 @@ button[data-type="action"]{
         height: 6vh;
         font-size: medium;
         border-radius: 4%;
-        display: flex;
-        display: -webkit-flex;
         justify-content: center;
         -webkit-justify-content: center;
         align-items: center;
