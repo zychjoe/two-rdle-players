@@ -18,6 +18,8 @@
     .oskb{
         display: flex;
         display: -webkit-flex;
+        flex-flow: row wrap;
+        -webkit-flex-flow: row wrap;
         height: 21vh;
         width: 90vw;
         left: calc(5vw);
