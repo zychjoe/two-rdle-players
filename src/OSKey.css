@@ -39,6 +39,7 @@ button[data-type="action"]{
         height: 6vh;
         font-size: medium;
         border-radius: 4%;
+        padding: 0;
     }
     
     button[data-type="letter"]{
