@@ -56,8 +56,8 @@ const options = {
  * Return:
  * guess -- [{"B", "perfect"}, | answerTracker -- [{"B", true},  | winningSoFar -- 
  *           {"O", "perfect"}, |                   {"O", true},  |    true
- *           {"O", "perfect"}, |                   {"N", true},  |
- *           {"K", "perfect"}, |                   {"U", true},  |
+ *           {"O", "perfect"}, |                   {"O", true},  |
+ *           {"K", "perfect"}, |                   {"K", true},  |
  *           {"S", "perfect"}] |                   {"S", true}]  |
  * 
  * 
