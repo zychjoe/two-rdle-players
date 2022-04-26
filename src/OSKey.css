@@ -39,10 +39,6 @@ button[data-type="action"]{
         height: 6vh;
         font-size: medium;
         border-radius: 4%;
-        justify-content: center;
-        -webkit-justify-content: center;
-        align-items: center;
-        -webkit-align-items: center;
     }
     
     button[data-type="letter"]{

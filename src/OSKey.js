@@ -23,7 +23,7 @@ function OSKey(props){
                 data-type={props.type}
                 data-result={props.result}
                 onClick={props.onClick}>
-                    {props.name}
+                    <div align="center">{props.name}</div>
         </button>
     )
 }
